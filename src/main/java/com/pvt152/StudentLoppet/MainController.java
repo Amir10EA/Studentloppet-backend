@@ -13,7 +13,7 @@ public class MainController {
     
     @GetMapping(value="/hello")
     public @ResponseBody String hello() {
-        return "Nyare än nytt";
+        return "Nyare än nytt, Yeahoooo";
     }
     
 }
