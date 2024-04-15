@@ -23,7 +23,7 @@ public class MainController {
         return "helloworld";
     }
     
-    @GetMapping(path = "/add/{firstName}/{lastName}/{university}/{password}/{email}")
+    @GetMapping(path = "/add/{firstName}/{lastName}/{password}/{email}/{university}")
     public @ResponseBody String addNewUser (@PathVariable String firstName, @PathVariable String lastName, 
         @PathVariable String password, @PathVariable String email, @PathVariable University university){
 
