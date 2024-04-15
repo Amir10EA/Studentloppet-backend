@@ -32,16 +32,28 @@ public class User {
         return university;
     }
 
-    public User(String firstName, String lastName, String password, String email, String university) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.university = university;
-        this.password = password;
+    public String getPassword() {
+        return password;
+    }
+
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setUniversity(String university) {
+        this.university = university;
     }
 
     

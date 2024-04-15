@@ -27,8 +27,13 @@ public class MainController {
     public @ResponseBody String addNewUser (@PathVariable String firstName, @PathVariable String lastName, 
         @PathVariable String password, @PathVariable String email, @PathVariable String university){
 
-        User u = new User(firstName, lastName, password, email, university);
+        User u = new User();
+        
+        u.setFirstName(firstName);
+        u.setLastName(lastName);
+        
         userRepository.save(u);
+
         return "Saved";
 
     }
