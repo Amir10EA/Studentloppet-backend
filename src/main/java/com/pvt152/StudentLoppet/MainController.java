@@ -51,7 +51,7 @@ public class MainController {
 
     }
 
-    @GetMapping(path = "/add/{password}")
+    @GetMapping(path = "/add/password/{password}")
     public @ResponseBody String changePassword (@PathVariable String password){
 
         User u = new User();
