@@ -47,7 +47,7 @@ public class MainController {
 
             u.setFirstName(first);
             u.setLastName(last);
-
+            userRepository.save(u);
             return true;
             
         } catch (IllegalArgumentException userNotFoundException) {
@@ -64,6 +64,7 @@ public class MainController {
             User u = userRepository.findById(email).orElseThrow(IllegalArgumentException::new);
 
             u.setUniversity(university);
+            userRepository.save(u);
 
             return true;
             
