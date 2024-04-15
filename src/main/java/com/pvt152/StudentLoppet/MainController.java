@@ -23,35 +23,8 @@ public class MainController {
         return "helloworld";
     }
     
-    @GetMapping(path = "/add/{firstName}/{lastName}/{password}/{email}/{university}")
-    public @ResponseBody String addNewUser (@PathVariable String firstName, @PathVariable String lastName, 
-        @PathVariable String password, @PathVariable String email, @PathVariable String university){
 
-        User u = new User();
-        
-        u.setFirstName(firstName);
-        u.setLastName(lastName);
-
-        userRepository.save(u);
-
-        return "Saved";
-
-    }
-
-    @GetMapping(path = "/add/{email}")
-    public @ResponseBody String addNewUserTest (@PathVariable String email){
-
-        User u = new User();
-        
-        u.setEmail(email);
-
-        userRepository.save(u);
-
-        return "Saved";
-
-    }
-
-    @GetMapping(path = "/add/test/{email}/{password}")
+    @GetMapping(path = "/add/{email}/{password}")
     public @ResponseBody String changePassword (@PathVariable String password, @PathVariable String email){
 
         User u = new User();
@@ -64,6 +37,42 @@ public class MainController {
         return "Saved";
 
     }
+
+    @GetMapping(path = "/set/{email}/{first}/{last}")
+    public @ResponseBody boolean setName (@PathVariable String email, @PathVariable String first, @PathVariable String last){
+
+        try {
+
+            User u = userRepository.findById(email).orElseThrow(IllegalArgumentException::new);
+
+            u.setFirstName(first);
+            u.setLastName(last);
+
+            return true;
+            
+        } catch (IllegalArgumentException userNotFoundException) {
+            return false;
+        }
+
+    }
+
+    @GetMapping(path = "/set/{email}/{university}")
+    public @ResponseBody boolean setUniversity (@PathVariable String email, @PathVariable String university){
+
+        try {
+
+            User u = userRepository.findById(email).orElseThrow(IllegalArgumentException::new);
+
+            u.setUniversity(university);
+
+            return true;
+            
+        } catch (IllegalArgumentException userNotFoundException) {
+            return false;
+        }
+
+    }
+
 
     @GetMapping(path = "/login/{email}/{password}")
     public @ResponseBody boolean login (@PathVariable String email, @PathVariable String password){
