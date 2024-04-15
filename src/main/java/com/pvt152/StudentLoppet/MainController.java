@@ -106,6 +106,8 @@ public class MainController {
         try {
 
             User u = userRepository.findById(email).orElseThrow(IllegalArgumentException::new);
+            u.setPassword(password);
+            userRepository.save(u);
 
             return u.getPassword().equals(passwordHashing(password));
 
