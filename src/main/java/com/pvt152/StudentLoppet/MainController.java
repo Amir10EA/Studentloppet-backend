@@ -31,12 +31,26 @@ public class MainController {
         
         u.setFirstName(firstName);
         u.setLastName(lastName);
-        
+
         userRepository.save(u);
 
         return "Saved";
 
     }
+
+    @GetMapping(path = "/add/{email}")
+    public @ResponseBody String addNewUserTest (@PathVariable String email){
+
+        User u = new User();
+        
+        u.setEmail(email);
+
+        userRepository.save(u);
+
+        return "Saved";
+
+    }
+
 
     @GetMapping(path = "/login/{email}/{password}")
     public @ResponseBody boolean login (@PathVariable String email, @PathVariable String password){
