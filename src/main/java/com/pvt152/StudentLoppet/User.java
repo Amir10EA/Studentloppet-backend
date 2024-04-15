@@ -13,7 +13,7 @@ public class User {
     private String lastName;
     private String password;
 
-    private University university;
+    private String university;
 
     
     public String getEmail() {
@@ -28,11 +28,11 @@ public class User {
         return lastName;
     }
 
-    public University getUniversity() {
+    public String getUniversity() {
         return university;
     }
 
-    public User(String firstName, String lastName, String password, String email, University university) {
+    public User(String firstName, String lastName, String password, String email, String university) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.university = university;

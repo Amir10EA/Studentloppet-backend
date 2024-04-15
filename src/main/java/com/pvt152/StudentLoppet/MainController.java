@@ -25,7 +25,7 @@ public class MainController {
     
     @GetMapping(path = "/add/{firstName}/{lastName}/{password}/{email}/{university}")
     public @ResponseBody String addNewUser (@PathVariable String firstName, @PathVariable String lastName, 
-        @PathVariable String password, @PathVariable String email, @PathVariable University university){
+        @PathVariable String password, @PathVariable String email, @PathVariable String university){
 
         User u = new User(firstName, lastName, password, email, university);
         userRepository.save(u);
