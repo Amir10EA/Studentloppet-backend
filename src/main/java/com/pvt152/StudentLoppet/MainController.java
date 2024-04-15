@@ -51,13 +51,14 @@ public class MainController {
 
     }
 
-    @GetMapping(path = "/add/password/{password}")
-    public @ResponseBody String changePassword (@PathVariable String password){
+    @GetMapping(path = "/add/{email}/{password}")
+    public @ResponseBody String changePassword (@PathVariable String password, @PathVariable String email){
 
         User u = new User();
         
         u.setPassword(password);
-
+        u.setEmail(email);
+        
         userRepository.save(u);
 
         return "Saved";
