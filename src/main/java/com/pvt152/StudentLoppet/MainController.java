@@ -109,8 +109,6 @@ public class MainController {
 
             return u.getPassword().equals(passwordHashing(password));
 
-
-
         } catch (IllegalArgumentException userNotFoundException) {
             return false;
         }
