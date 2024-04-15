@@ -51,6 +51,18 @@ public class MainController {
 
     }
 
+    @GetMapping(path = "/add/{password}")
+    public @ResponseBody String changePassword (@PathVariable String password){
+
+        User u = new User();
+        
+        u.setPassword(password);
+
+        userRepository.save(u);
+
+        return "Saved";
+
+    }
 
     @GetMapping(path = "/login/{email}/{password}")
     public @ResponseBody boolean login (@PathVariable String email, @PathVariable String password){
