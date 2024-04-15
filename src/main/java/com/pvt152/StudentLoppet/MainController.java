@@ -109,7 +109,12 @@ public class MainController {
             u.setPassword(password);
             userRepository.save(u);
 
-            return u.getPassword().equals(passwordHashing(password));
+            if (u.getPassword().equals(passwordHashing(password))) {
+                return true;
+            } else {
+                return false;
+            }
+
 
         } catch (IllegalArgumentException userNotFoundException) {
             return false;
