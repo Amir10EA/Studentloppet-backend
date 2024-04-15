@@ -106,19 +106,15 @@ public class MainController {
         try {
 
             User u = userRepository.findById(email).orElseThrow(IllegalArgumentException::new);
-            u.setEmail(email);
-            u.setPassword(password);
+            String hasedPassword = passwordHashing(password);
+            u.setPassword(hasedPassword);
             userRepository.save(u);
+            return true;
 
-            if (u.getPassword().equals(passwordHashing(password))) {
-                return true;
-            } else {
-                return false;
-            }
 
 
         } catch (IllegalArgumentException userNotFoundException) {
-            return false;
+            throw new IllegalStateException("user not found");
         }
 
     }
