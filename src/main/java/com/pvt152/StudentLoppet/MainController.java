@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 @RequestMapping(path="/studentloppet")
+@CrossOrigin
 public class MainController {
     
     @Autowired
@@ -21,12 +23,33 @@ public class MainController {
         return "helloworld";
     }
     
-    @GetMapping(path = "/add/{firstName}/{lastName}/{university}")
-    public @ResponseBody String addNewUser (@PathVariable String firstName, @PathVariable String lastName, @PathVariable University university){
+    @GetMapping(path = "/add/{firstName}/{lastName}/{university}/{password}/{email}")
+    public @ResponseBody String addNewUser (@PathVariable String firstName, @PathVariable String lastName, 
+        @PathVariable String password, @PathVariable String email, @PathVariable University university){
 
-        User u = new User(firstName, lastName, university);
+        User u = new User(firstName, lastName, password, email, university);
         userRepository.save(u);
         return "Saved";
+
+    }
+
+    @GetMapping(path = "/login/{email}/{password}")
+    public @ResponseBody boolean login (@PathVariable String email, @PathVariable String password){
+        try {
+
+            User u = userRepository.findById(email).orElseThrow(IllegalArgumentException::new);
+
+            if (u.getPassword().equals(password)){
+                return true;
+            }
+            else{
+                return false;
+            }
+
+            
+        } catch (IllegalArgumentException userNotFoundException) {
+            return false;
+        }
 
     }
 

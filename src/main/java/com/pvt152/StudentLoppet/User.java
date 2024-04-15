@@ -1,24 +1,23 @@
 package com.pvt152.StudentLoppet;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private String email;
 
     private String firstName;
     private String lastName;
-  
+    private String password;
+
     private University university;
 
-    public Integer getId() {
-        return id;
+    
+    public String getEmail() {
+        return email;
     }
 
     public String getFirstName() {
@@ -33,10 +32,16 @@ public class User {
         return university;
     }
 
-    public User(String firstName, String lastName, University university) {
+    public User(String firstName, String lastName, String password, String email, University university) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.university = university;
+        this.password = password;
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     
