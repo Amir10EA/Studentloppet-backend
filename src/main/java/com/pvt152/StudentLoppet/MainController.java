@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+
 @Controller
 @RequestMapping(path = "/studentloppet")
 @CrossOrigin
 public class MainController {
 
+    private static final String DELIVERABLE = "DELIVERABLE";
+    
     @Autowired
     private UserRepository userRepository;
 
@@ -31,13 +34,20 @@ public class MainController {
 
     @GetMapping(path = "/add/{email}/{password}")
     public @ResponseBody String register(@PathVariable String password, @PathVariable String email) {
-
+        
+        if(emailOccupied(email)){
+            throw new IllegalArgumentException("Email already exists"); 
+        }
+        if(!validateEmail(email)){
+            throw new IllegalArgumentException("Email not valid"); 
+        }
+        
         User u = new User();
         u.setEmail(email);
         u.setPassword(passwordHashing(password));
         userRepository.save(u);
 
-        return validateEmail(email);
+        return "saved";
 
     }
 
@@ -113,14 +123,11 @@ public class MainController {
     }
     
     private boolean emailOccupied(String email){
-        return false;
+        return userRepository.existsById(email);
     }
-
     
-    private String validateEmail(String email){
-        
+    private boolean validateEmail(String email){
         WebClient client = WebClient.create("https://emailvalidation.abstractapi.com");
-        
         try {
             String result = client.get()
                 .uri("/v1/?api_key=bf7e1f869c184338aca90578ac66b448&email=" + email)
@@ -131,11 +138,10 @@ public class MainController {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode jsonNode = mapper.readTree(result);
             String delivarable = jsonNode.get("deliverability").asText();
-            return delivarable;
+            return delivarable.equals(DELIVERABLE);
         } catch (Exception e) {
             // TODO: handle exception
-            return null;
+            return false;
         }
-
     }
 }
