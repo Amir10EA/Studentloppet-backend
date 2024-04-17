@@ -36,10 +36,10 @@ public class MainController {
     public @ResponseBody String register(@PathVariable String password, @PathVariable String email) {
         
         if(emailOccupied(email)){
-            throw new IllegalArgumentException("Email already exists"); 
+            return new IllegalArgumentException("Email already exists").toString(); 
         }
         if(!validateEmail(email)){
-            throw new IllegalArgumentException("Email not valid"); 
+            return new IllegalArgumentException("Email not valid").toString(); 
         }
         
         User u = new User();
