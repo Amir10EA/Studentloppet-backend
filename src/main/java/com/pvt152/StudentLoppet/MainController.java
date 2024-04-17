@@ -4,6 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +37,7 @@ public class MainController {
         u.setPassword(passwordHashing(password));
         userRepository.save(u);
 
-        return "Saved";
+        return validateEmail(email);
 
     }
 
@@ -106,5 +111,31 @@ public class MainController {
         }
 
     }
+    
+    private boolean emailOccupied(String email){
+        return false;
+    }
 
+    
+    private String validateEmail(String email){
+        
+        WebClient client = WebClient.create("https://emailvalidation.abstractapi.com");
+        
+        try {
+            String result = client.get()
+                .uri("/v1/?api_key=bf7e1f869c184338aca90578ac66b448&email=" + email)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+            
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(result);
+            String delivarable = jsonNode.get("deliverability").asText();
+            return delivarable;
+        } catch (Exception e) {
+            // TODO: handle exception
+            return null;
+        }
+
+    }
 }
