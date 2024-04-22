@@ -1,6 +1,8 @@
 package com.pvt152.StudentLoppet;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 
 @Entity
@@ -13,9 +15,9 @@ public class User {
     private String lastName;
     private String password;
 
-    private String university;
+    @Enumerated(EnumType.STRING)
+    private University university;
 
-    
     public String getEmail() {
         return email;
     }
@@ -28,7 +30,7 @@ public class User {
         return lastName;
     }
 
-    public String getUniversity() {
+    public University getUniversity() {
         return university;
     }
 
@@ -52,10 +54,8 @@ public class User {
         this.password = password;
     }
 
-    public void setUniversity(String university) {
+    public void setUniversity(University university) {
         this.university = university;
     }
-
-    
 
 }

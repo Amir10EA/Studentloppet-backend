@@ -11,5 +11,4 @@ public class StudentLoppetApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(StudentLoppetApplication.class, args);
 	}
-
 }
