@@ -1,9 +1,11 @@
 package com.pvt152.StudentLoppet;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @Controller
 @RequestMapping(path = "/studentloppet")
@@ -31,7 +34,7 @@ public class MainController {
         return "helloworld";
     }
 
-    @GetMapping(path = "/add/{email}/{password}/{university}")
+    @GetMapping(path = "/addwithuni/{email}/{password}/{university}")
     public @ResponseBody String register(@PathVariable String password, @PathVariable String email,
             @PathVariable University university) {
 
@@ -46,6 +49,23 @@ public class MainController {
         u.setEmail(email);
         u.setPassword(passwordHashing(password));
         u.setUniversity(university);
+        userRepository.save(u);
+        return "saved";
+    }
+
+    @GetMapping(path = "/add/{email}/{password}")
+    public @ResponseBody String register(@PathVariable String password, @PathVariable String email) {
+
+        if (emailOccupied(email)) {
+            return new IllegalArgumentException("Email already exists").toString();
+        }
+        if (!validateEmail(email)) {
+            return new IllegalArgumentException("Email not valid").toString();
+        }
+
+        User u = new User();
+        u.setEmail(email);
+        u.setPassword(passwordHashing(password));
         userRepository.save(u);
 
         return "saved";
@@ -68,7 +88,6 @@ public class MainController {
         } catch (IllegalArgumentException userNotFoundException) {
             return false;
         }
-
     }
 
     private String passwordHashing(String password) {
@@ -85,7 +104,6 @@ public class MainController {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @GetMapping(path = "/login/{email}/{password}")
@@ -127,4 +145,29 @@ public class MainController {
             return false;
         }
     }
+
+    @GetMapping(path = "/test")
+    public @ResponseBody ResponseEntity<String> testEndpoint() {
+        return ResponseEntity.ok("Test endpoint is working");
+    }
+
+    // @RestController
+    // @RequestMapping(path = "/api/leaderboard")
+    // public class LeaderboardController {
+    // private final UniversityLeaderboardService leaderboardService;
+
+    // public LeaderboardController(UniversityLeaderboardService leaderboardService)
+    // {
+    // this.leaderboardService = leaderboardService;
+    // }
+
+    // @GetMapping(path = "/universities")
+    // public @ResponseBody ResponseEntity<List<UniversityScoreDTO>>
+    // getUniversityLeaderboard() {
+    // List<UniversityScoreDTO> scores =
+    // leaderboardService.calculateUniversityScores();
+    // return ResponseEntity.ok(scores);
+    // }
+    // }
+
 }

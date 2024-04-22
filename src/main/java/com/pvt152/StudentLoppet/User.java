@@ -10,7 +10,7 @@ public class User {
 
     @Id
     private String email;
-
+    private int score;
     private String firstName;
     private String lastName;
     private String password;
@@ -36,6 +36,14 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
     public void setEmail(String email) {
