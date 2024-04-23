@@ -1,4 +1,4 @@
-package com.pvt152.StudentLoppet;
+package com.pvt152.StudentLoppet.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

@@ -1,5 +1,7 @@
 package com.pvt152.StudentLoppet;
 
+import com.pvt152.StudentLoppet.model.University;
+
 public class UniversityScoreDTO {
     private University university;
     private int score;

@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import com.pvt152.StudentLoppet.model.User;
+
 public interface UserRepository extends CrudRepository<User, String> {
 
     // sparar resultatet från querien i "findScoresByUniversity" listan där varje

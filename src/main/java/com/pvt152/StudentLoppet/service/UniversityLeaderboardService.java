@@ -1,9 +1,13 @@
-package com.pvt152.StudentLoppet;
+package com.pvt152.StudentLoppet.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+
+import com.pvt152.StudentLoppet.UniversityScoreDTO;
+import com.pvt152.StudentLoppet.UserRepository;
+import com.pvt152.StudentLoppet.model.University;
 
 @Service
 public class UniversityLeaderboardService {

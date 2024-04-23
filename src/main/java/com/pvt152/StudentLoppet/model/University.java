@@ -1,4 +1,4 @@
-package com.pvt152.StudentLoppet;
+package com.pvt152.StudentLoppet.model;
 
 public enum University {
     UPPSALA_UNIVERSITET("Uppsala universitet"),
