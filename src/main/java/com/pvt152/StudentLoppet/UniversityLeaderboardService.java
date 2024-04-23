@@ -16,7 +16,7 @@ public class UniversityLeaderboardService {
     public List<UniversityScoreDTO> calculateUniversityScores() {
         return userRepository.findScoresByUniversity().stream()
                 .map(result -> new UniversityScoreDTO(
-                        (University) result[0], // Use University directly
+                        (University) result[0],
                         ((Number) result[1]).intValue()))
                 .collect(Collectors.toList());
     }

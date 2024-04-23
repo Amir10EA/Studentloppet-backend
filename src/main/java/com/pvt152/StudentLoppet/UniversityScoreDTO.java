@@ -9,7 +9,6 @@ public class UniversityScoreDTO {
         this.score = score;
     }
 
-    // Getters and setters
     public University getUniversity() {
         return university;
     }

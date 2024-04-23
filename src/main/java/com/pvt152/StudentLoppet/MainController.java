@@ -17,7 +17,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping(path = "/studentloppet")
@@ -123,6 +127,18 @@ public class MainController {
 
     }
 
+    @GetMapping(path = "/increaseScore/{email}/{value}")
+    public @ResponseBody String increaseScore(@PathVariable String email, @PathVariable int value) {
+        try {
+            User u = userRepository.findById(email).orElseThrow(() -> new IllegalStateException("User not found"));
+            u.setScore(u.getScore() + value);
+            userRepository.save(u);
+            return "Increased " + email + " score by " + value;
+        } catch (IllegalStateException e) {
+            return e.getMessage();
+        }
+    }
+
     private boolean emailOccupied(String email) {
         return userRepository.existsById(email);
     }
@@ -151,23 +167,28 @@ public class MainController {
         return ResponseEntity.ok("Test endpoint is working");
     }
 
-    // @RestController
-    // @RequestMapping(path = "/api/leaderboard")
-    // public class LeaderboardController {
-    // private final UniversityLeaderboardService leaderboardService;
+    @RestController
+    @RequestMapping(path = "/api/universities")
+    public class LeaderboardController {
+        private final UniversityLeaderboardService leaderboardService;
 
-    // public LeaderboardController(UniversityLeaderboardService leaderboardService)
-    // {
-    // this.leaderboardService = leaderboardService;
-    // }
+        public LeaderboardController(UniversityLeaderboardService leaderboardService) {
+            this.leaderboardService = leaderboardService;
+        }
 
-    // @GetMapping(path = "/universities")
-    // public @ResponseBody ResponseEntity<List<UniversityScoreDTO>>
-    // getUniversityLeaderboard() {
-    // List<UniversityScoreDTO> scores =
-    // leaderboardService.calculateUniversityScores();
-    // return ResponseEntity.ok(scores);
-    // }
-    // }
+        @GetMapping(path = "/scoreboard")
+        public @ResponseBody ResponseEntity<List<UniversityScoreDTO>> getUniversityLeaderboard() {
+            List<UniversityScoreDTO> scores = leaderboardService.calculateUniversityScores();
+            return ResponseEntity.ok(scores);
+        }
 
+        @GetMapping(path = "/representation")
+        public @ResponseBody Map<String, String> getUniversityRepresentations() {
+            Map<String, String> universityMap = new LinkedHashMap<>();
+            for (University university : University.values()) {
+                universityMap.put(university.name(), university.getDisplayName());
+            }
+            return universityMap;
+        }
+    }
 }
