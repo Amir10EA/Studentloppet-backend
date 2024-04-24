@@ -36,9 +36,7 @@ public class ForgotPasswordController {
     private final EmailService emailService;
 
     private final ForgotPasswordRepository forgotPasswordRepository;
-
     // private final PasswordEncoder passwordEncoder;
-
     private final UserService userService;
 
     public ForgotPasswordController(UserRepository userRepository, EmailService emailService,
@@ -53,7 +51,6 @@ public class ForgotPasswordController {
     public ResponseEntity<String> testPostEndpoint() {
         return ResponseEntity.ok("POST request received successfully!");
     }
-
     // check if email exists, if it does, generate OTP and send it to the email.
     @PostMapping( "/verifyEmail/{email}")
     public ResponseEntity<String> verifyEmail(@PathVariable String email) {
@@ -134,7 +131,6 @@ public class ForgotPasswordController {
 
         return ResponseEntity.ok("Password has updated sucessfully");
     }
-
     private Integer otpGenerator() {
         Random random = new Random();
         return random.nextInt(100_000, 999_999);
