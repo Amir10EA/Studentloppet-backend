@@ -52,7 +52,6 @@ public class ForgotPasswordController {
     public ResponseEntity<String> testPostEndpoint() {
         return ResponseEntity.ok("POST request received successfully!");
     }
-
     // check if email exists, if it does, generate OTP and send it to the email.
     @PostMapping( "/verifyEmail/{email}")
     public ResponseEntity<String> verifyEmail(@PathVariable String email) {
