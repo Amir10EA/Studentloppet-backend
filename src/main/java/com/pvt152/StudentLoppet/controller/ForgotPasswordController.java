@@ -36,7 +36,6 @@ public class ForgotPasswordController {
     private final EmailService emailService;
 
     private final ForgotPasswordRepository forgotPasswordRepository;
-
     // private final PasswordEncoder passwordEncoder;
 
     private final UserService userService;
