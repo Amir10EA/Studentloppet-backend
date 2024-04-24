@@ -60,7 +60,6 @@ public class ForgotPasswordController {
         try {
             User u = userRepository.findById(email)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
             int otp = otpGenerator();
             MailBody mailBody = MailBody.builder()
                     .to(email)
