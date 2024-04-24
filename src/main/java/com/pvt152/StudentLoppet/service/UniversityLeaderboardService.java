@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.pvt152.StudentLoppet.UniversityScoreDTO;
-import com.pvt152.StudentLoppet.UserRepository;
+import com.pvt152.StudentLoppet.dto.UniversityScoreDTO;
 import com.pvt152.StudentLoppet.model.University;
+import com.pvt152.StudentLoppet.repository.UserRepository;
 
 @Service
 public class UniversityLeaderboardService {

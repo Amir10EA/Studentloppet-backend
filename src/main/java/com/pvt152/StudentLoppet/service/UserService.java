@@ -2,9 +2,10 @@ package com.pvt152.StudentLoppet.service;
 
 import com.pvt152.StudentLoppet.model.University;
 import com.pvt152.StudentLoppet.model.User;
+import com.pvt152.StudentLoppet.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pvt152.StudentLoppet.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -49,7 +50,7 @@ public class UserService {
         return "Increased " + email + " score by " + value;
     }
 
-    private String passwordHashing(String password) {
+    public String passwordHashing(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(password.getBytes());

@@ -1,4 +1,4 @@
-package com.pvt152.StudentLoppet;
+package com.pvt152.StudentLoppet.dto;
 
 import com.pvt152.StudentLoppet.model.University;
 

@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class User {
@@ -21,6 +22,9 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+    @OneToOne(mappedBy = "user")
+    private ForgotPassword forgotpassword;
 
     public String getFirstName() {
         return firstName;

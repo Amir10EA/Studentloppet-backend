@@ -1,6 +1,6 @@
 package com.pvt152.StudentLoppet.controller;
 
-import com.pvt152.StudentLoppet.UniversityScoreDTO;
+import com.pvt152.StudentLoppet.dto.UniversityScoreDTO;
 import com.pvt152.StudentLoppet.model.University;
 import com.pvt152.StudentLoppet.service.UniversityLeaderboardService;
 import org.springframework.http.ResponseEntity;
