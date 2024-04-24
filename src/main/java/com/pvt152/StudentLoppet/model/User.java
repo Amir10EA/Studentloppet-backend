@@ -26,8 +26,8 @@ public class User {
         return email;
     }
 
-    @OneToMany(mappedBy = "user")
-    private List<ForgotPassword> forgotpasswords;
+    @OneToOne
+    private ForgotPassword forgotPassword;
 
     public String getFirstName() {
         return firstName;
