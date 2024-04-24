@@ -11,6 +11,6 @@ import com.pvt152.StudentLoppet.model.User;
 
 public interface ForgotPasswordRepository extends JpaRepository<ForgotPassword, Integer> {
 
-    @Query("SELECT f FROM ForgotPassword f WHERE f.otp = :otp AND f.user = :user")
+    @Query("select fp from ForgotPassword fp where fp.otp =?1 and fp.user =?2")
     Optional<ForgotPassword> findByUserAndToken(Integer otp, User user);
 }

@@ -1,9 +1,12 @@
 package com.pvt152.StudentLoppet.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -23,8 +26,8 @@ public class User {
         return email;
     }
 
-    @OneToOne(mappedBy = "user")
-    private ForgotPassword forgotpassword;
+    @OneToMany(mappedBy = "user")
+    private List<ForgotPassword> forgotpasswords;
 
     public String getFirstName() {
         return firstName;
