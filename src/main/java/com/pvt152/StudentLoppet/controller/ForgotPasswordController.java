@@ -55,7 +55,7 @@ public class ForgotPasswordController {
     }
 
     // check if email exists, if it does, generate OTP and send it to the email.
-    @PostMapping(path = "/verifyEmail/{email}")
+    @PostMapping( "/verifyEmail/{email}")
     public ResponseEntity<String> verifyEmail(@PathVariable String email) {
         try {
             User u = userRepository.findById(email)
