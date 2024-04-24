@@ -123,7 +123,6 @@ public class ForgotPasswordController {
         if (!Objects.equals(changePassword.password(), changePassword.repeatedPassword())) {
             return new ResponseEntity<>("Enter the password again", HttpStatus.EXPECTATION_FAILED);
         }
-
         String hashedPassword = userService.passwordHashing(changePassword.password());
 
         // Start a new transaction for the update operation
