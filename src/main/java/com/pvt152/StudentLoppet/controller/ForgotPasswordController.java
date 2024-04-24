@@ -131,7 +131,6 @@ public class ForgotPasswordController {
 
         return ResponseEntity.ok("Password has updated sucessfully");
     }
-
     private Integer otpGenerator() {
         Random random = new Random();
         return random.nextInt(100_000, 999_999);
