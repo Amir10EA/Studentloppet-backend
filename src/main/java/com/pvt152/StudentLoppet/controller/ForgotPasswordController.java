@@ -127,7 +127,6 @@ public class ForgotPasswordController {
 
         // Start a new transaction for the update operation
         userRepository.updatePassword(email, hashedPassword);
-
         return ResponseEntity.ok("Password has updated sucessfully");
     }
     private Integer otpGenerator() {
