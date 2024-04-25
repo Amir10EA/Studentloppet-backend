@@ -6,9 +6,13 @@ import com.pvt152.StudentLoppet.service.UniversityLeaderboardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping(path = "/api/universities")
@@ -28,10 +32,16 @@ public class LeaderboardController {
 
     @GetMapping(path = "/representation")
     public @ResponseBody Map<String, String> getUniversityRepresentations() {
-        Map<String, String> universityMap = new LinkedHashMap<>();
-        for (University university : University.values()) {
-            universityMap.put(university.name(), university.getDisplayName());
-        }
+        Comparator<University> byDisplayName = Comparator.comparing(University::getDisplayName);
+
+        Map<String, String> universityMap = Stream.of(University.values())
+                .sorted(byDisplayName)
+                .collect(Collectors.toMap(
+                        University::name,
+                        University::getDisplayName,
+                        (oldValue, newValue) -> oldValue,
+                        TreeMap::new)); // Use TreeMap to maintain order
+
         return universityMap;
     }
 

@@ -49,7 +49,10 @@ public class ForgotPasswordController {
     public ResponseEntity<String> testPostEndpoint() {
         return ResponseEntity.ok("POST request received successfully!");
     }
-    @PostMapping( "/verifyEmail/{email}")
+
+    // check if email exists, if it does, generate OTP and send it to the email.
+    @PostMapping("/verifyEmail/{email}")
+
     public ResponseEntity<String> verifyEmail(@PathVariable String email) {
         try {
             User u = userRepository.findById(email)
@@ -77,7 +80,6 @@ public class ForgotPasswordController {
         }
     }
 
-
     @PostMapping("/verifyOtp/{otp}/{email}")
     public ResponseEntity<String> verifyOtp(@PathVariable Integer otp, @PathVariable String email) {
         User user = userRepository.findById(email).orElseThrow(() -> new IllegalStateException("Email not found"));
@@ -100,11 +102,14 @@ public class ForgotPasswordController {
         if (!Objects.equals(changePassword.password(), changePassword.repeatedPassword())) {
             return new ResponseEntity<>("Enter the password again", HttpStatus.EXPECTATION_FAILED);
         }
+
         String hashedPassword = userService.passwordHashing(changePassword.password());
 
         userRepository.updatePassword(email, hashedPassword);
+
         return ResponseEntity.ok("Password has updated sucessfully");
     }
+
     private Integer otpGenerator() {
         Random random = new Random();
         return random.nextInt(100_000, 999_999);
