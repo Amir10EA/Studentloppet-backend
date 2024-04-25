@@ -34,9 +34,7 @@ public class ForgotPasswordController {
     private static final Logger log = LoggerFactory.getLogger(ForgotPasswordController.class);
     private final UserRepository userRepository;
     private final EmailService emailService;
-
     private final ForgotPasswordRepository forgotPasswordRepository;
-    // private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
     public ForgotPasswordController(UserRepository userRepository, EmailService emailService,
@@ -51,7 +49,6 @@ public class ForgotPasswordController {
     public ResponseEntity<String> testPostEndpoint() {
         return ResponseEntity.ok("POST request received successfully!");
     }
-    // check if email exists, if it does, generate OTP and send it to the email.
     @PostMapping( "/verifyEmail/{email}")
     public ResponseEntity<String> verifyEmail(@PathVariable String email) {
         try {
@@ -80,23 +77,7 @@ public class ForgotPasswordController {
         }
     }
 
-    // testing pull
 
-    // @PostMapping("/reset-password")
-    // public ResponseEntity<?> resetPassword(@RequestParam("token") String token,
-    // @RequestParam("newPassword") String newPassword) {
-    // PasswordResetToken prt = passwordResetTokenRepository.findByToken(token);
-    // if (prt == null || prt.isExpired()) {
-    // return ResponseEntity.badRequest().body("Ogiltig eller utgången token.");
-    // }
-    // User user = prt.getUser();
-    // user.setPassword(passwordEncoder.encode(newPassword));
-    // userRepository.save(user);
-    // return ResponseEntity.ok("Ditt lösenord har återställts.");
-    // }
-
-    // the user will enter the OTP from his email, if the OTP is correct, the user
-    // is verified to be able to change his password.
     @PostMapping("/verifyOtp/{otp}/{email}")
     public ResponseEntity<String> verifyOtp(@PathVariable Integer otp, @PathVariable String email) {
         User user = userRepository.findById(email).orElseThrow(() -> new IllegalStateException("Email not found"));
@@ -113,10 +94,6 @@ public class ForgotPasswordController {
         return ResponseEntity.ok("token verified!");
     }
 
-    // the user will have to enter the new password twice, if the two passwords are
-    // the same, the password will be changed.
-    // for frontend, the ChangePassword record will be used meaning that a record
-    // that contains both the old and the new password will be sent.
     @PostMapping("/changePassword/{email}")
     public ResponseEntity<String> changePasswordHandler(@RequestBody ChangePassword changePassword,
             @PathVariable String email) {
@@ -125,7 +102,6 @@ public class ForgotPasswordController {
         }
         String hashedPassword = userService.passwordHashing(changePassword.password());
 
-        // Start a new transaction for the update operation
         userRepository.updatePassword(email, hashedPassword);
         return ResponseEntity.ok("Password has updated sucessfully");
     }
