@@ -32,15 +32,14 @@ public class LeaderboardController {
 
     @GetMapping(path = "/representation")
     public @ResponseBody Map<String, String> getUniversityRepresentations() {
-        Comparator<University> byDisplayName = Comparator.comparing(University::getDisplayName);
+        Comparator<String> caseInsensitiveOrder = String.CASE_INSENSITIVE_ORDER;
 
         Map<String, String> universityMap = Stream.of(University.values())
-                .sorted(byDisplayName)
                 .collect(Collectors.toMap(
                         University::name,
                         University::getDisplayName,
                         (oldValue, newValue) -> oldValue,
-                        TreeMap::new)); // Use TreeMap to maintain order
+                        () -> new TreeMap<>(caseInsensitiveOrder)));
 
         return universityMap;
     }
