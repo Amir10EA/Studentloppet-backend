@@ -1,8 +1,10 @@
 package com.pvt152.StudentLoppet.controller;
 
+import com.pvt152.StudentLoppet.dto.UserDTO;
 import com.pvt152.StudentLoppet.model.University;
 import com.pvt152.StudentLoppet.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +28,11 @@ public class MainController {
         if (userService.emailOccupied(email)) {
             return new IllegalArgumentException("Email already exists").toString();
         }
+        if (!userService.validateEmail(email)) {
+            return new IllegalArgumentException("Invalid email address").toString();
+        }
         userService.registerUser(email, password, university);
-        return "saved";
+        return "User registered successfully";
     }
 
     @GetMapping(path = "/add/{email}/{password}")
@@ -35,13 +40,25 @@ public class MainController {
         if (userService.emailOccupied(email)) {
             return new IllegalArgumentException("Email already exists").toString();
         }
+        if (!userService.validateEmail(email)) {
+            return new IllegalArgumentException("Invalid email address").toString();
+        }
         userService.registerUser(email, password, null);
         return "saved";
     }
 
+    @GetMapping(path = "/getUser/{email}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable String email) {
+        return userService.getUserInfo(email)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @GetMapping(path = "/login/{email}/{password}")
-    public @ResponseBody boolean login(@PathVariable String email, @PathVariable String password) {
-        return userService.login(email, password);
+    public ResponseEntity<UserDTO> login(@PathVariable String email, @PathVariable String password) {
+        return userService.login(email, password)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
     @GetMapping(path = "/set/{email}/{first}/{last}")

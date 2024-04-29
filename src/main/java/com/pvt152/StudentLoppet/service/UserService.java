@@ -1,5 +1,6 @@
 package com.pvt152.StudentLoppet.service;
 
+import com.pvt152.StudentLoppet.dto.UserDTO;
 import com.pvt152.StudentLoppet.model.University;
 import com.pvt152.StudentLoppet.model.User;
 import com.pvt152.StudentLoppet.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -38,9 +40,13 @@ public class UserService {
         return true;
     }
 
-    public boolean login(String email, String password) {
-        User u = userRepository.findById(email).orElseThrow(IllegalArgumentException::new);
-        return passwordHashing(password).equals(u.getPassword());
+    public Optional<UserDTO> login(String email, String password) {
+        Optional<User> user = userRepository.findById(email);
+        if (user.isPresent() && passwordHashing(password).equals(user.get().getPassword())) {
+            return getUserInfo(email);
+        } else {
+            return Optional.empty();
+        }
     }
 
     public String increaseScore(String email, int value) {
@@ -63,6 +69,15 @@ public class UserService {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Optional<UserDTO> getUserInfo(String email) {
+        return userRepository.findById(email).map(user -> new UserDTO(
+                user.getEmail(),
+                user.getScore(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getUniversity()));
     }
 
     public boolean emailOccupied(String email) {
