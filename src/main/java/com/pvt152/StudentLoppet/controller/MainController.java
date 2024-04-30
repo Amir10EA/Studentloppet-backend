@@ -3,6 +3,7 @@ package com.pvt152.StudentLoppet.controller;
 import com.pvt152.StudentLoppet.dto.UserDTO;
 import com.pvt152.StudentLoppet.model.Activity;
 import com.pvt152.StudentLoppet.model.University;
+import com.pvt152.StudentLoppet.service.ActivityService;
 import com.pvt152.StudentLoppet.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,9 @@ public class MainController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ActivityService activityService;
 
     @GetMapping(value = "/hello")
     public @ResponseBody String hello() {
@@ -78,7 +82,7 @@ public class MainController {
             @PathVariable double distance,
             @PathVariable long duration) {
         try {
-            Activity activity = userService.logActivity(email, distance, duration);
+            Activity activity = activityService.logActivity(email, distance, duration);
             return ResponseEntity.ok(activity);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());

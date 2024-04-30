@@ -3,20 +3,20 @@ package com.pvt152.StudentLoppet.dto;
 import com.pvt152.StudentLoppet.model.University;
 
 public class UniversityScoreDTO {
-    private University university;
+    private String universityDisplayName;
     private int score;
 
-    public UniversityScoreDTO(University university, int score) {
-        this.university = university;
+    public UniversityScoreDTO(String universityDisplayName, int score) {
+        this.universityDisplayName = universityDisplayName;
         this.score = score;
     }
 
-    public University getUniversity() {
-        return university;
+    public String getUniversityDisplayName() {
+        return universityDisplayName;
     }
 
-    public void setUniversity(University university) {
-        this.university = university;
+    public void setUniversityDisplayName(String universityDisplayName) {
+        this.universityDisplayName = universityDisplayName;
     }
 
     public int getScore() {

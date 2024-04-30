@@ -16,7 +16,7 @@ public interface UserRepository extends CrudRepository<User, String> {
     // sparar resultatet från querien i "findScoresByUniversity" listan där varje
     // element av listan innehåller en egen lista av två element där första platsen
     // är universitet enum och andra det korresponderade poängen.
-    @Query("SELECT u.university as university, SUM(u.score) as totalScore FROM User u GROUP BY u.university ORDER BY SUM(u.score) DESC")
+    @Query("SELECT u.university as university, SUM(u.score) as totalScore FROM User u WHERE u.university IS NOT NULL GROUP BY u.university ORDER BY SUM(u.score) DESC")
     List<Object[]> findScoresByUniversity();
 
     @Transactional

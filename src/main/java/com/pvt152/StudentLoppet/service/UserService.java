@@ -55,31 +55,11 @@ public class UserService {
         }
     }
 
-    public Activity logActivity(String userEmail, double distance, long duration) {
-        User user = userRepository.findById(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
-        Activity activity = new Activity();
-        activity.setUser(user);
-        activity.setDistance(distance);
-        activity.setDuration(duration);
-        activity.setTimestamp(LocalDateTime.now());
-        activityRepository.save(activity);
-
-        int score = calculateScore(distance, duration);
-        increaseScore(userEmail, score); // Use the existing increaseScore method
-        return activity;
-    }
-
     public String increaseScore(String email, int value) {
         User u = userRepository.findById(email).orElseThrow(() -> new IllegalStateException("User not found"));
         u.setScore(u.getScore() + value);
         userRepository.save(u);
         return "Increased " + email + " score by " + value;
-    }
-
-    // Ändra senare, hur många poäng ska en kilometer omvandlas till, just nu 1km =
-    // 10poäng
-    private int calculateScore(double distance, long duration) {
-        return (int) (distance * 10);
     }
 
     public String passwordHashing(String password) {

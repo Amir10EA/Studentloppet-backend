@@ -16,7 +16,7 @@ public class Activity {
     private Long id;
     private double distance; // in kilometers
     private long duration; // in minutes
-    private LocalDateTime timestamp;
+    private LocalDateTime timestamp; // when the run was done
 
     @ManyToOne
     @JoinColumn(name = "user_email")
