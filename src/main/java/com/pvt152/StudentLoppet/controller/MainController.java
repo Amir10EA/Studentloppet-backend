@@ -1,6 +1,7 @@
 package com.pvt152.StudentLoppet.controller;
 
 import com.pvt152.StudentLoppet.dto.UserDTO;
+import com.pvt152.StudentLoppet.model.Activity;
 import com.pvt152.StudentLoppet.model.University;
 import com.pvt152.StudentLoppet.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,8 +73,21 @@ public class MainController {
         return userService.increaseScore(email, value);
     }
 
+    @PostMapping(path = "/activity/{email}/{distance}/{duration}")
+    public ResponseEntity<?> logActivity(@PathVariable String email,
+            @PathVariable double distance,
+            @PathVariable long duration) {
+        try {
+            Activity activity = userService.logActivity(email, distance, duration);
+            return ResponseEntity.ok(activity);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
     @GetMapping(path = "/test")
     public @ResponseBody ResponseEntity<String> testEndpoint() {
         return ResponseEntity.ok("Test endpoint is working");
     }
+
 }
