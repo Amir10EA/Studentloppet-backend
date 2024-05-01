@@ -66,12 +66,14 @@ public class MainController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
+    // fixa så att user inte kan skriva otilåtna namn, fixa test
     @GetMapping(path = "/set/{email}/{first}/{last}")
     public @ResponseBody boolean setName(@PathVariable String email, @PathVariable String first,
             @PathVariable String last) {
         return userService.setName(email, first, last);
     }
 
+    // fixa så att user inte kan skriva något utöver integers, fixa test
     @GetMapping(path = "/increaseScore/{email}/{value}")
     public @ResponseBody String increaseScore(@PathVariable String email, @PathVariable int value) {
         return userService.increaseScore(email, value);

@@ -1,6 +1,9 @@
 package com.pvt152.StudentLoppet.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,4 +29,13 @@ public class ActivityController {
         }
     }
 
+    @GetMapping(path = "/total/{email}")
+    public ResponseEntity<?> getTotalDistanceAndDuration(@PathVariable String email) {
+        try {
+            Map<String, Object> result = activityService.getTotalDistanceAndDuration(email);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
 }

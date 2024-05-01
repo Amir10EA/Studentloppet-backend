@@ -9,6 +9,10 @@ import com.pvt152.StudentLoppet.repository.ActivityRepository;
 import com.pvt152.StudentLoppet.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ActivityService {
@@ -17,8 +21,7 @@ public class ActivityService {
     private ActivityRepository activityRepository;
 
     @Autowired
-    private UserService userService; // Assuming UserService handles user-related operations.
-
+    private UserService userService;
     @Autowired
     private UserRepository userRepository;
 
@@ -43,4 +46,14 @@ public class ActivityService {
         return (int) (distance * 10);
     }
 
+    public Map<String, Object> getTotalDistanceAndDuration(String userEmail) {
+        List<Activity> activities = activityRepository.findByUserEmail(userEmail);
+        double totalDistance = activities.stream().mapToDouble(Activity::getDistance).sum();
+        long totalDuration = activities.stream().mapToLong(Activity::getDuration).sum();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalDistance", totalDistance);
+        result.put("totalDuration", totalDuration);
+        return result;
+    }
 }
