@@ -32,7 +32,7 @@ public class ActivityController {
 
     // Denna endpoint används för få fram en sammanfattning över alla aktiviterer
     // från en användare (sammanlagd distance, duration, calories burned, avarage
-    // speed (min/km))
+    // speed (min/km), total score)
     @GetMapping(path = "/total/{email}")
     public ResponseEntity<?> getTotalDistanceAndDuration(@PathVariable String email) {
         try {
@@ -45,8 +45,8 @@ public class ActivityController {
 
     // Denna endpoint används för få fram en sammanfattning över alla aktiviterer
     // från en användare för den senaste veckan (sammanlagd distance, duration,
-    // calories burned, avarage speed (min/km))
-    @GetMapping(path = "/TotalWeekSummary/{email}")
+    // calories burned, avarage speed (min/km), total score)
+    @GetMapping(path = "/totalWeekSummary/{email}")
     public ResponseEntity<?> getTotalDistanceAndDurationForWeek(@PathVariable String email) {
         try {
             Map<String, Object> result = activityService.getTotalDistanceAndDurationPastWeek(email);

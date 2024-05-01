@@ -58,9 +58,12 @@ public class ActivityService {
     }
 
     private Map<String, Object> calculateTotalDistanceAndDuration(List<Activity> activities) {
-        double totalDistance = activities.stream().mapToDouble(Activity::getDistance).sum(); // total distance in
-                                                                                             // kilometers
-        long totalDuration = activities.stream().mapToLong(Activity::getDuration).sum(); // total duration in minutes
+        double totalDistance = activities.stream().mapToDouble(Activity::getDistance).sum(); // sammanlagd sprungen
+                                                                                             // sträcka i km
+        long totalDuration = activities.stream().mapToLong(Activity::getDuration).sum(); // sammanlagd sprungen tid i
+                                                                                         // min
+        int totalScore = activities.stream().mapToInt(a -> calculateScore(a.getDistance(), a.getDuration())).sum(); // sammanlagd
+                                                                                                                    // poängsamling
 
         double minPerKm = 0;
         if (totalDistance > 0) {
@@ -76,6 +79,7 @@ public class ActivityService {
         result.put("totalDuration", totalDuration);
         result.put("averageSpeed", minPerKm);
         result.put("caloriesBurned", caloriesBurned);
+        result.put("totalScore", totalScore);
 
         return result;
     }
