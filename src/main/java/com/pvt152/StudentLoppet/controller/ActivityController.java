@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.pvt152.StudentLoppet.model.Activity;
+import com.pvt152.StudentLoppet.model.University;
 import com.pvt152.StudentLoppet.service.ActivityService;
 
 @RestController
@@ -50,6 +51,16 @@ public class ActivityController {
     public ResponseEntity<?> getTotalDistanceAndDurationForWeek(@PathVariable String email) {
         try {
             Map<String, Object> result = activityService.getTotalDistanceAndDurationPastWeek(email);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping(path = "/totalUniversity/{university}")
+    public ResponseEntity<?> getTotalDistanceAndDurationByUniversity(@PathVariable University university) {
+        try {
+            Map<String, Object> result = activityService.getTotalDistanceAndDurationByUniversity(university);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
