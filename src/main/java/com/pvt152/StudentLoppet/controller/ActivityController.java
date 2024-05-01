@@ -18,7 +18,7 @@ public class ActivityController {
     private ActivityService activityService;
 
     // Denna endpoint används för att posta nya aktiviteter till databasen.
-    @PostMapping(path = "/activity/{email}/{distance}/{duration}")
+    @PostMapping(path = "/addActivity/{email}/{distance}/{duration}")
     public ResponseEntity<?> logActivity(@PathVariable String email,
             @PathVariable double distance,
             @PathVariable long duration) {
