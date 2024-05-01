@@ -48,12 +48,35 @@ public class ActivityService {
 
     public Map<String, Object> getTotalDistanceAndDuration(String userEmail) {
         List<Activity> activities = activityRepository.findByUserEmail(userEmail);
-        double totalDistance = activities.stream().mapToDouble(Activity::getDistance).sum();
-        long totalDuration = activities.stream().mapToLong(Activity::getDuration).sum();
+        return calculateTotalDistanceAndDuration(activities);
+    }
+
+    public Map<String, Object> getTotalDistanceAndDurationPastWeek(String userEmail) {
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
+        List<Activity> activities = activityRepository.findByUserEmailAndTimestampAfter(userEmail, oneWeekAgo);
+        return calculateTotalDistanceAndDuration(activities);
+    }
+
+    private Map<String, Object> calculateTotalDistanceAndDuration(List<Activity> activities) {
+        double totalDistance = activities.stream().mapToDouble(Activity::getDistance).sum(); // total distance in
+                                                                                             // kilometers
+        long totalDuration = activities.stream().mapToLong(Activity::getDuration).sum(); // total duration in minutes
+
+        double minPerKm = 0;
+        if (totalDistance > 0) {
+            minPerKm = totalDuration / totalDistance; // Minutes per kilometer
+        }
+
+        // OBS!!! Denna metod för at beräkna hur kalorier förbränns behöver
+        // dubbelceckas!!!
+        double caloriesBurned = totalDistance * 50;
 
         Map<String, Object> result = new HashMap<>();
         result.put("totalDistance", totalDistance);
         result.put("totalDuration", totalDuration);
+        result.put("averageSpeed", minPerKm);
+        result.put("caloriesBurned", caloriesBurned);
+
         return result;
     }
 }
