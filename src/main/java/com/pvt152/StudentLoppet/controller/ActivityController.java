@@ -1,5 +1,6 @@
 package com.pvt152.StudentLoppet.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.pvt152.StudentLoppet.dto.UserStats;
 import com.pvt152.StudentLoppet.model.Activity;
 import com.pvt152.StudentLoppet.model.University;
+import com.pvt152.StudentLoppet.model.User;
 import com.pvt152.StudentLoppet.service.ActivityService;
 
 @RestController
@@ -46,7 +49,9 @@ public class ActivityController {
 
     // Denna endpoint används för få fram en sammanfattning över alla aktiviterer
     // från en användare för den senaste veckan (sammanlagd distance, duration,
-    // calories burned, avarage speed (min/km), total score)
+    // calories burned, avarage speed (min/km), total score),
+    // score räknar endast ut summan av alla aktiviteter från den senaste veckan,
+    // när flera poänginsamlingssätt finns, updatera metoderna i servicen
     @GetMapping(path = "/totalWeekSummary/{email}")
     public ResponseEntity<?> getTotalDistanceAndDurationForWeek(@PathVariable String email) {
         try {
@@ -57,6 +62,9 @@ public class ActivityController {
         }
     }
 
+    // Denna endpoint används för få fram en sammanfattning över alla aktiviterer
+    // från ett universitets alla användare (sammanlagd distance, duration,
+    // calories burned, avarage speed (min/km), total score)
     @GetMapping(path = "/totalUniversity/{university}")
     public ResponseEntity<?> getTotalDistanceAndDurationByUniversity(@PathVariable University university) {
         try {
@@ -66,4 +74,20 @@ public class ActivityController {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
+
+    @GetMapping("/sortedByDistance/{university}")
+    public ResponseEntity<List<UserStats>> sortedByDistance(@PathVariable University university) {
+        return ResponseEntity.ok(activityService.getStudentsByDistance(university));
+    }
+
+    @GetMapping("/sortedBySpeed/{university}")
+    public ResponseEntity<List<UserStats>> sortedBySpeed(@PathVariable University university) {
+        return ResponseEntity.ok(activityService.getStudentsBySpeed(university));
+    }
+
+    @GetMapping("/sortedByCalories/{university}")
+    public ResponseEntity<List<UserStats>> sortedByCalories(@PathVariable University university) {
+        return ResponseEntity.ok(activityService.getStudentsByCaloriesBurned(university));
+    }
+
 }
