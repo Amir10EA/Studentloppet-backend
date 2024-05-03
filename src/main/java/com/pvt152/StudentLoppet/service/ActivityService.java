@@ -155,4 +155,13 @@ public class ActivityService {
                 .collect(Collectors.toList());
     }
 
+    public Map<String, Double> sumDistanceByUniversity() {
+        return activityRepository.sumDistanceByUniversity().stream()
+                .collect(Collectors.toMap(
+                        entry -> ((University) entry[0]).getDisplayName(),
+                        entry -> ((Number) entry[1]).doubleValue(),
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new));
+    }
+
 }

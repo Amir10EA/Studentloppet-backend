@@ -26,4 +26,7 @@ public interface UserRepository extends CrudRepository<User, String> {
 
     @Query("SELECT u.score FROM User u WHERE u.email = :email")
     Integer findScoreByEmail(@Param("email") String email);
+
+    @Query("SELECT u.university as university, COUNT(u) as userCount FROM User u WHERE u.university IS NOT NULL GROUP BY u.university ORDER BY COUNT(u) DESC")
+    List<Object[]> countUsersByUniversity();
 }

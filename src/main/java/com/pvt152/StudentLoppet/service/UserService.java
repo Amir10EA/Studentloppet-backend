@@ -16,7 +16,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -110,4 +113,12 @@ public class UserService {
         }
     }
 
+    public Map<String, Integer> countUsersByUniversity() {
+        return userRepository.countUsersByUniversity().stream()
+                .collect(Collectors.toMap(
+                        entry -> ((University) entry[0]).getDisplayName(),
+                        entry -> ((Number) entry[1]).intValue(),
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new));
+    }
 }

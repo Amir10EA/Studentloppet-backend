@@ -23,4 +23,7 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
     // här finns en lista med alla aktiviteter för en specifik universitet.
     @Query("SELECT a FROM Activity a WHERE a.user.university = :university")
     List<Activity> findByUniversity(@Param("university") University university);
+
+    @Query("SELECT a.user.university as university, SUM(a.distance) as totalDistance FROM Activity a GROUP BY a.user.university")
+    List<Object[]> sumDistanceByUniversity();
 }
