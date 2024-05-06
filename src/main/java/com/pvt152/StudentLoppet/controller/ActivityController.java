@@ -8,11 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.pvt152.StudentLoppet.dto.UserScoreDTO;
 import com.pvt152.StudentLoppet.dto.UserStats;
 import com.pvt152.StudentLoppet.model.Activity;
 import com.pvt152.StudentLoppet.model.University;
 import com.pvt152.StudentLoppet.model.User;
 import com.pvt152.StudentLoppet.service.ActivityService;
+import com.pvt152.StudentLoppet.service.UserService;
 
 @RestController
 @RequestMapping("/api/activities")
@@ -20,6 +22,9 @@ public class ActivityController {
 
     @Autowired
     private ActivityService activityService;
+
+    @Autowired
+    private UserService userService;
 
     // Denna endpoint används för att posta nya aktiviteter till databasen.
     @PostMapping(path = "/addActivity/{email}/{distance}/{duration}")
@@ -88,6 +93,22 @@ public class ActivityController {
     @GetMapping("/sortedByCalories/{university}")
     public ResponseEntity<List<UserStats>> sortedByCalories(@PathVariable University university) {
         return ResponseEntity.ok(activityService.getStudentsByCaloriesBurned(university));
+    }
+
+    @GetMapping("/userLeaderboard")
+    public ResponseEntity<List<UserScoreDTO>> getUserLeaderboard() {
+        List<UserScoreDTO> userScores = userService.calculateUserScores();
+        return ResponseEntity.ok(userScores);
+    }
+
+    @GetMapping(path = "/universityRank/{university}")
+    public ResponseEntity<?> getUniversityRank(@PathVariable University university) {
+        try {
+            int rank = activityService.getUniversityRank(university);
+            return ResponseEntity.ok(rank);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
     }
 
 }

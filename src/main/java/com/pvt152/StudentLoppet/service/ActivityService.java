@@ -3,6 +3,8 @@ package com.pvt152.StudentLoppet.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pvt152.StudentLoppet.dto.UniversityScoreDTO;
+import com.pvt152.StudentLoppet.dto.UserScoreDTO;
 import com.pvt152.StudentLoppet.dto.UserStats;
 import com.pvt152.StudentLoppet.model.Activity;
 import com.pvt152.StudentLoppet.model.University;
@@ -17,7 +19,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class ActivityService {
@@ -29,6 +33,9 @@ public class ActivityService {
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UniversityLeaderboardService universityLeaderboardService;
 
     public Activity logActivity(String userEmail, double distance, long duration) {
         User user = userRepository.findById(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
@@ -48,7 +55,11 @@ public class ActivityService {
     // Ändra senare, hur många poäng ska en kilometer omvandlas till, just nu 1km =
     // 10poäng
     private int calculateScore(double distance, long duration) {
-        return (int) (distance * 10);
+        if (duration == 0)
+            return 0;
+        double durationInHours = duration / 60.0;
+        double speed = distance / durationInHours;
+        return (int) (distance * 10 * speed);
     }
 
     public Map<String, Object> getTotalDistanceAndDuration(String userEmail) {
@@ -69,6 +80,14 @@ public class ActivityService {
     public Map<String, Object> getTotalDistanceAndDurationByUniversity(University university) {
         List<Activity> activities = activityRepository.findByUniversity(university);
         List<Object[]> universityScores = userRepository.findScoresByUniversity();
+
+        // Fetch the number of users at the university
+        int numberOfStudents = userRepository.countUsersByUniversity().stream()
+                .filter(objects -> university.equals(objects[0]))
+                .map(objects -> ((Long) objects[1]).intValue())
+                .findFirst()
+                .orElse(0);
+
         int universityScore = 0;
         for (Object[] row : universityScores) {
             if (row[0] == university) {
@@ -76,9 +95,24 @@ public class ActivityService {
                 break;
             }
         }
+
         Map<String, Object> summary = calculateTotalDistanceAndDuration(activities, universityScore);
         summary.put("universityName", university.getDisplayName()); // Add the university display name to the summary
+        summary.put("numberOfStudents", numberOfStudents); // Add number of students to the summary
+
+        // Get the rank of the university and add it to the summary
+        int universityRank = getUniversityRank(university);
+        summary.put("universityRank", universityRank);
+
         return summary;
+    }
+
+    public List<UniversityScoreDTO> calculateUniversityScores() {
+        return userRepository.findScoresByUniversity().stream()
+                .map(result -> new UniversityScoreDTO(
+                        ((University) result[0]).getDisplayName(),
+                        ((Number) result[1]).intValue()))
+                .collect(Collectors.toList());
     }
 
     private Map<String, Object> calculateTotalDistanceAndDuration(List<Activity> activities, int totalScore) {
@@ -162,6 +196,25 @@ public class ActivityService {
                         entry -> ((Number) entry[1]).doubleValue(),
                         (e1, e2) -> e1,
                         LinkedHashMap::new));
+    }
+
+    public int getUniversityRank(University university) {
+        List<UniversityScoreDTO> universityScores = calculateUniversityScores();
+        int rank = 1;
+        int actualRank = 1; // This holds the actual rank to be returned
+        Integer lastScore = null; // Store the last score for comparison
+
+        for (UniversityScoreDTO universityScore : universityScores) {
+            if (lastScore == null || !lastScore.equals(universityScore.getScore())) {
+                lastScore = universityScore.getScore();
+                rank = actualRank;
+            }
+            if (universityScore.getUniversityDisplayName().equals(university.getDisplayName())) {
+                return rank;
+            }
+            actualRank++;
+        }
+        return -1; // In case the university is not found
     }
 
 }

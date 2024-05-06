@@ -1,6 +1,7 @@
 package com.pvt152.StudentLoppet.service;
 
 import com.pvt152.StudentLoppet.dto.UserDTO;
+import com.pvt152.StudentLoppet.dto.UserScoreDTO;
 import com.pvt152.StudentLoppet.model.Activity;
 import com.pvt152.StudentLoppet.model.University;
 import com.pvt152.StudentLoppet.model.User;
@@ -16,7 +17,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -120,5 +123,14 @@ public class UserService {
                         entry -> ((Number) entry[1]).intValue(),
                         (e1, e2) -> e1,
                         LinkedHashMap::new));
+    }
+
+    public List<UserScoreDTO> calculateUserScores() {
+        return userRepository.findScoresByUser().stream()
+                .map(result -> new UserScoreDTO(
+                        (String) result[1], // userName as concatenated fullName
+                        (String) result[0], // email
+                        ((Number) result[2]).intValue())) // score
+                .collect(Collectors.toList());
     }
 }
