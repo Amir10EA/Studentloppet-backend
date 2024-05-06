@@ -30,9 +30,12 @@ public class ActivityController {
     // Denna endpoint används för att posta nya aktiviteter till databasen.
     @PostMapping(path = "/addActivity/{email}/{distance}/{duration}")
     public ResponseEntity<?> logActivity(@PathVariable String email,
-            @PathVariable double distance,
-            @PathVariable long duration) {
+            @PathVariable("distance") double distance,
+            @PathVariable("duration") long duration) {
         try {
+            if (Double.isNaN(distance) || duration < 0) {
+                throw new IllegalArgumentException("Invalid distance or duration");
+            }
             Activity activity = activityService.logActivity(email, distance, duration);
             return ResponseEntity.ok(activity);
         } catch (Exception e) {

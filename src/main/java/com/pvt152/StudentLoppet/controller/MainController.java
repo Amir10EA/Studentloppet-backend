@@ -91,6 +91,17 @@ public class MainController {
         }
     }
 
+    @GetMapping(path = "/setWeightHeight/{email}/{weight}/{height}")
+    public ResponseEntity<Boolean> setWeightAndHeight(@PathVariable String email, @PathVariable double weight,
+            @PathVariable double height) {
+        boolean result = userService.setWeightAndHeight(email, weight, height);
+        if (result) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.badRequest().body(false);
+        }
+    }
+
     @GetMapping(path = "/test")
     public @ResponseBody ResponseEntity<String> testEndpoint() {
         return ResponseEntity.ok("Test endpoint is working");

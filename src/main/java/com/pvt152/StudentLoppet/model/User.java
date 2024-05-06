@@ -18,6 +18,8 @@ public class User {
     private String firstName;
     private String lastName;
     private String password;
+    private double weight;
+    private double height;
 
     @Enumerated(EnumType.STRING)
     private University university;
@@ -71,6 +73,22 @@ public class User {
 
     public void setUniversity(University university) {
         this.university = university;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public void setHeight(double height) {
+        this.height = height;
     }
 
 }

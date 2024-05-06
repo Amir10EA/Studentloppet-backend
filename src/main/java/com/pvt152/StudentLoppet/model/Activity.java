@@ -17,10 +17,40 @@ public class Activity {
     private double distance; // in kilometers
     private long duration; // in minutes
     private LocalDateTime timestamp; // when the run was done
+    private double caloriesBurned;
 
     @ManyToOne
     @JoinColumn(name = "user_email")
     private User user;
+
+    // Default constructor
+    public Activity() {
+    }
+
+    public Activity(double distance, long duration, User user) {
+        this.distance = distance;
+        this.duration = duration;
+        this.user = user;
+        // Check if weight and height are provided
+        if (user != null && user.getWeight() > 0 && user.getHeight() > 0) {
+            this.caloriesBurned = calculateCaloriesBurned(distance, duration, user.getWeight(), user.getHeight());
+        } else {
+            this.caloriesBurned = 0; // Default to 0 calories if weight or height are not set
+        }
+    }
+
+    private double calculateCaloriesBurned(double distanceInKm, long durationInMinutes, double weightInKg,
+            double heightInM) {
+        double distanceInMeters = distanceInKm * 1000; // Convert km to meters
+        double durationInHours = durationInMinutes / 60.0; // Convert minutes to hours
+        double speedInMetersPerSecond = distanceInMeters / (durationInHours * 3600); // Calculate speed in m/s
+
+        // Calories calculation formula
+        double caloriesPerMinute = 0.035 * weightInKg
+                + (Math.pow(speedInMetersPerSecond, 2) / heightInM) * 0.029 * weightInKg;
+
+        return caloriesPerMinute * durationInMinutes;
+    }
 
     // Getters and setters
     public Long getId() {
@@ -62,4 +92,9 @@ public class Activity {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public double getCaloriesBurned() {
+        return caloriesBurned;
+    }
+
 }

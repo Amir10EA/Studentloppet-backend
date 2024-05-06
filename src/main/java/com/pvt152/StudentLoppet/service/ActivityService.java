@@ -39,10 +39,8 @@ public class ActivityService {
 
     public Activity logActivity(String userEmail, double distance, long duration) {
         User user = userRepository.findById(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
-        Activity activity = new Activity();
-        activity.setUser(user);
-        activity.setDistance(distance);
-        activity.setDuration(duration);
+
+        Activity activity = new Activity(distance, duration, user);
         activity.setTimestamp(LocalDateTime.now());
         activityRepository.save(activity);
 
@@ -130,19 +128,16 @@ public class ActivityService {
     }
 
     private Map<String, Object> calculateTotalDistanceAndDuration(List<Activity> activities, int totalScore) {
-        double totalDistance = activities.stream().mapToDouble(Activity::getDistance).sum(); // sammanlagd sprungen
-                                                                                             // sträcka i km
-        long totalDuration = activities.stream().mapToLong(Activity::getDuration).sum(); // sammanlagd sprungen tid i
-                                                                                         // min
+        double totalDistance = activities.stream().mapToDouble(Activity::getDistance).sum(); // Total distance run in km
+        long totalDuration = activities.stream().mapToLong(Activity::getDuration).sum(); // Total time run in min
 
         double minPerKm = 0;
         if (totalDistance > 0) {
             minPerKm = totalDuration / totalDistance; // Minutes per kilometer
         }
 
-        // OBS!!! Denna metod för at beräkna hur kalorier förbränns behöver
-        // dubbelceckas!!!
-        double caloriesBurned = totalDistance * 50;
+        // Sum up the calories burned for all activities
+        double caloriesBurned = activities.stream().mapToDouble(Activity::getCaloriesBurned).sum();
 
         Map<String, Object> result = new HashMap<>();
         result.put("totalDistance", totalDistance);
@@ -195,8 +190,8 @@ public class ActivityService {
     public List<UserStats> getStudentsByCaloriesBurned(University university) {
         List<Activity> activities = activityRepository.findByUniversity(university);
         return activities.stream()
-                .collect(Collectors.groupingBy(Activity::getUser,
-                        Collectors.summingDouble(a -> a.getDistance() * 50))) // Assuming 50 calories per km
+                .collect(
+                        Collectors.groupingBy(Activity::getUser, Collectors.summingDouble(Activity::getCaloriesBurned)))
                 .entrySet().stream()
                 .map(e -> new UserStats(e.getKey().getFirstName() + " " + e.getKey().getLastName(), e.getValue()))
                 .sorted(Comparator.comparingDouble(UserStats::getValue).reversed())
