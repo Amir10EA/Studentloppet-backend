@@ -133,4 +133,29 @@ public class UserService {
                         ((Number) result[2]).intValue())) // score
                 .collect(Collectors.toList());
     }
+
+    public int getUserRank(String userEmail) {
+        List<Object[]> scores = userRepository.findScoresByUser();
+        Integer lastScore = null; // This will store the last user's score for comparison
+        int rank = 1; // This will maintain the current rank
+
+        for (Object[] score : scores) {
+            String email = (String) score[0];
+            int userScore = ((Number) score[2]).intValue();
+
+            // If score changes and it's not the first entry, increment rank
+            if (lastScore != null && userScore != lastScore) {
+                rank++;
+            }
+
+            // Check if the current email matches the requested user's email
+            if (email.equals(userEmail)) {
+                return rank; // Return the current rank if the email matches
+            }
+
+            lastScore = userScore; // Update the lastScore to the current user's score
+        }
+
+        return -1; // Return -1 if the user is not found
+    }
 }

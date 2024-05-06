@@ -1,5 +1,6 @@
 package com.pvt152.StudentLoppet.controller;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -106,6 +107,19 @@ public class ActivityController {
         try {
             int rank = activityService.getUniversityRank(university);
             return ResponseEntity.ok(rank);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/userRank/{email}")
+    public ResponseEntity<?> getUserRank(@PathVariable String email) {
+        try {
+            int rank = userService.getUserRank(email);
+            if (rank == -1) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(Collections.singletonMap("rank", rank));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }

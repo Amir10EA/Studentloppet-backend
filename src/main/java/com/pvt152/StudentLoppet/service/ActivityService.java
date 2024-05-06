@@ -66,7 +66,13 @@ public class ActivityService {
         List<Activity> activities = activityRepository.findByUserEmail(userEmail);
         int userScore = userRepository.findScoreByEmail(userEmail) != null ? userRepository.findScoreByEmail(userEmail)
                 : 0;
-        return calculateTotalDistanceAndDuration(activities, userScore);
+        Map<String, Object> result = calculateTotalDistanceAndDuration(activities, userScore);
+
+        // Get the rank of the user and add it to the result
+        int userRank = userService.getUserRank(userEmail);
+        result.put("userRank", userRank);
+
+        return result;
     }
 
     public Map<String, Object> getTotalDistanceAndDurationPastWeek(String userEmail) {
@@ -74,7 +80,15 @@ public class ActivityService {
         List<Activity> activities = activityRepository.findByUserEmailAndTimestampAfter(userEmail, oneWeekAgo);
         int userScorePastWeek = activities.stream().mapToInt(a -> calculateScore(a.getDistance(), a.getDuration()))
                 .sum();
-        return calculateTotalDistanceAndDuration(activities, userScorePastWeek);
+        Map<String, Object> result = calculateTotalDistanceAndDuration(activities, userScorePastWeek);
+
+        // Get the rank of the user based on the past week's activities and add it to
+        // the result
+        int userRankPastWeek = userService.getUserRank(userEmail); // Assuming rank is based on total score not just
+                                                                   // past week
+        result.put("userRank", userRankPastWeek);
+
+        return result;
     }
 
     public Map<String, Object> getTotalDistanceAndDurationByUniversity(University university) {
