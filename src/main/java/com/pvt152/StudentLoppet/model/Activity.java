@@ -31,28 +31,35 @@ public class Activity {
         this.distance = distance;
         this.duration = duration;
         this.user = user;
-        // Check if weight and height are provided
-        if (user != null && user.getWeight() > 0 && user.getHeight() > 0) {
-            this.caloriesBurned = calculateCaloriesBurned(distance, duration, user.getWeight(), user.getHeight());
+        // Calculate calories burned if weight is provided
+        if (user != null && user.getWeight() > 0) {
+            this.caloriesBurned = calculateCaloriesBurned(distance, duration, user.getWeight());
         } else {
-            this.caloriesBurned = 0; // Default to 0 calories if weight or height are not set
+            this.caloriesBurned = 0; // Default to 0 calories if weight is not set
         }
     }
 
-    private double calculateCaloriesBurned(double distanceInKm, long durationInMinutes, double weightInKg,
-            double heightInM) {
+    private double calculateCaloriesBurned(double distanceInKm, long durationInMinutes, double weightInKg) {
         double distanceInMeters = distanceInKm * 1000; // Convert km to meters
         double durationInHours = durationInMinutes / 60.0; // Convert minutes to hours
         double speedInMetersPerSecond = distanceInMeters / (durationInHours * 3600); // Calculate speed in m/s
+        double speedInKph = speedInMetersPerSecond * 3.6;
 
-        // Calories calculation formula
-        double caloriesPerMinute = 0.035 * weightInKg
-                + (Math.pow(speedInMetersPerSecond, 2) / heightInM) * 0.029 * weightInKg;
+        // Determine MET value based on speed
+        double met;
+        if (speedInKph < 8) {
+            met = 8.3; // Light running
+        } else if (speedInKph < 12) {
+            met = 9.8; // Moderate running
+        } else {
+            met = 11.0; // Fast running
+        }
 
-        return caloriesPerMinute * durationInMinutes;
+        // Calculate calories burned
+        return met * weightInKg * durationInHours;
     }
 
-    // Getters and setters
+    // Getters and setters (if needed for your framework, such as Spring Boot)
     public Long getId() {
         return id;
     }
@@ -85,16 +92,20 @@ public class Activity {
         this.timestamp = timestamp;
     }
 
+    public double getCaloriesBurned() {
+        return caloriesBurned;
+    }
+
+    public void setCaloriesBurned(double caloriesBurned) {
+        this.caloriesBurned = caloriesBurned;
+    }
+
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public double getCaloriesBurned() {
-        return caloriesBurned;
     }
 
 }

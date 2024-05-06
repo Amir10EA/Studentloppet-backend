@@ -159,13 +159,13 @@ public class UserService {
         return -1; // Return -1 if the user is not found
     }
 
-    public boolean setWeightAndHeight(String email, double weight, double height) {
+    public boolean setWeight(String email, double weight) {
         User user = userRepository.findById(email).orElse(null);
         if (user == null) {
             return false;
         }
         user.setWeight(weight);
-        user.setHeight(height);
+
         userRepository.save(user);
         return true;
     }

@@ -91,10 +91,9 @@ public class MainController {
         }
     }
 
-    @GetMapping(path = "/setWeightHeight/{email}/{weight}/{height}")
-    public ResponseEntity<Boolean> setWeightAndHeight(@PathVariable String email, @PathVariable double weight,
-            @PathVariable double height) {
-        boolean result = userService.setWeightAndHeight(email, weight, height);
+    @GetMapping(path = "/setWeight/{email}/{weight}")
+    public ResponseEntity<Boolean> setWeightCall(@PathVariable String email, @PathVariable double weight) {
+        boolean result = userService.setWeight(email, weight);
         if (result) {
             return ResponseEntity.ok(true);
         } else {
