@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import com.pvt152.StudentLoppet.dto.UserStats;
 import com.pvt152.StudentLoppet.model.University;
 import com.pvt152.StudentLoppet.model.User;
 
@@ -36,5 +37,8 @@ public interface UserRepository extends CrudRepository<User, String> {
 
     @Query("SELECT u.email, CONCAT(u.firstName, ' ', u.lastName), u.score FROM User u ORDER BY u.score DESC")
     List<Object[]> findScoresByUser();
+
+    @Query("SELECT u.email, u.score FROM User u WHERE u.university = :university ORDER BY u.score DESC")
+    List<Object[]> findScoresByUniversity(@Param("university") University university);
 
 }

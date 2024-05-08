@@ -1,6 +1,7 @@
 package com.pvt152.StudentLoppet.controller;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,6 +85,17 @@ public class ActivityController {
         }
     }
 
+    @GetMapping("/sortedByScore/{university}")
+    public ResponseEntity<List<UserScoreDTO>> sortedByScore(@PathVariable University university) {
+        try {
+            List<UserScoreDTO> userScores = activityService.getStudentsByScore(university);
+            return ResponseEntity.ok(userScores);
+        } catch (Exception e) {
+            // Return an empty list and a bad request status if there is an error
+            return ResponseEntity.badRequest().body(Collections.emptyList());
+        }
+    }
+
     @GetMapping("/sortedByDistance/{university}")
     public ResponseEntity<List<UserStats>> sortedByDistance(@PathVariable University university) {
         return ResponseEntity.ok(activityService.getStudentsByDistance(university));
@@ -118,14 +130,40 @@ public class ActivityController {
     @GetMapping("/userRank/{email}")
     public ResponseEntity<?> getUserRank(@PathVariable String email) {
         try {
-            int rank = userService.getUserRank(email);
-            if (rank == -1) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(Collections.singletonMap("rank", rank));
+            Map<String, Object> ranks = new HashMap<>();
+            int scoreRank = userService.getUserRankWithinUniversity(email); // Changed to the new method
+            int distanceRank = userService.getUserDistanceRankWithinUniversity(email);
+            int caloriesRank = userService.getUserCaloriesRankWithinUniversity(email);
+            int speedRank = userService.getUserSpeedRankWithinUniversity(email);
+
+            ranks.put("scoreRank", scoreRank == -1 ? Integer.MAX_VALUE : scoreRank);
+            ranks.put("distanceRank", distanceRank == -1 ? Integer.MAX_VALUE : distanceRank);
+            ranks.put("caloriesRank", caloriesRank == -1 ? Integer.MAX_VALUE : caloriesRank);
+            ranks.put("speedRank", speedRank == -1 ? Integer.MAX_VALUE : speedRank);
+
+            return ResponseEntity.ok(ranks);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
 
+    @GetMapping("/rankByDistance/{userEmail}")
+    public ResponseEntity<?> getUserDistanceRank(@PathVariable String userEmail) {
+        try {
+            int rank = userService.getUserDistanceRankWithinUniversity(userEmail);
+            return ResponseEntity.ok(Collections.singletonMap("rank", rank));
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+
+    @GetMapping("/globalUserRank/{email}")
+    public ResponseEntity<?> getGlobalUserRank(@PathVariable String email) {
+        try {
+            int globalRank = userService.getUserRank(email);
+            return ResponseEntity.ok(Collections.singletonMap("globalRank", globalRank));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
 }

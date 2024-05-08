@@ -149,6 +149,15 @@ public class ActivityService {
         return result;
     }
 
+    public List<UserScoreDTO> getStudentsByScore(University university) {
+        List<User> users = userRepository.findByUniversity(university);
+        return users.stream()
+                .map(user -> new UserScoreDTO(user.getFirstName() + " " + user.getLastName(), user.getEmail(),
+                        user.getScore()))
+                .sorted(Comparator.comparingInt(UserScoreDTO::getScore).reversed())
+                .collect(Collectors.toList());
+    }
+
     public List<UserStats> getStudentsByDistance(University university) {
         List<Activity> activities = activityRepository.findByUniversity(university);
         return activities.stream()

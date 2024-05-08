@@ -26,4 +26,17 @@ public interface ActivityRepository extends CrudRepository<Activity, Long> {
 
     @Query("SELECT a.user.university as university, SUM(a.distance) as totalDistance FROM Activity a GROUP BY a.user.university")
     List<Object[]> sumDistanceByUniversity();
+
+    @Query("SELECT a.user.email, SUM(a.distance) FROM Activity a WHERE a.user.university = :university GROUP BY a.user.email ORDER BY SUM(a.distance) DESC")
+    List<Object[]> findTotalDistanceByUniversity(@Param("university") University university);
+
+    @Query("SELECT a.user.email, SUM(a.caloriesBurned) FROM Activity a WHERE a.user.university = :university GROUP BY a.user.email ORDER BY SUM(a.caloriesBurned) DESC")
+    List<Object[]> findTotalCaloriesBurnedByUniversity(@Param("university") University university);
+
+    @Query("SELECT a.user.email, AVG(a.distance / (a.duration / 60.0)) as averageSpeed FROM Activity a WHERE a.user.university = :university GROUP BY a.user.email ORDER BY averageSpeed DESC")
+    List<Object[]> findAverageSpeedByUniversity(@Param("university") University university);
+
+    @Query("SELECT a.user.email, SUM(a.distance) as totalDistance, SUM(a.duration) as totalDuration FROM Activity a WHERE a.user.university = :university GROUP BY a.user.email ORDER BY a.user.email")
+    List<Object[]> findTotalDistanceAndDurationByUniversity(@Param("university") University university);
+
 }
