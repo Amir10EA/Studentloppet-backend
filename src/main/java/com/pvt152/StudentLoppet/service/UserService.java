@@ -48,14 +48,29 @@ public class UserService {
         userRepository.save(u);
         return u;
     }
-
     public boolean setName(String email, String first, String last) {
-        User u = userRepository.findById(email).orElseThrow(IllegalArgumentException::new);
+
+        if (!isValidName(first) || !isValidName(last)) {
+            throw new IllegalArgumentException("Names must contain only alphabetic characters and spaces.");
+        }
+
+
+        User u = userRepository.findById(email).orElseThrow(() -> new IllegalArgumentException("User not found for email: " + email));
+
+
         u.setFirstName(first);
         u.setLastName(last);
+
         userRepository.save(u);
         return true;
     }
+
+    private boolean isValidName(String name) {
+        return name.matches("^[A-Za-z ]+$");
+    }
+
+
+
 
     public Optional<UserDTO> login(String email, String password) {
         Optional<User> user = userRepository.findById(email);
@@ -174,7 +189,7 @@ public class UserService {
         List<Object[]> distances = activityRepository.findTotalDistanceByUniversity(user.getUniversity());
         if (distances.isEmpty()) {
             return 1; // If no distances are found, assume the university has no activities and assign
-                      // rank 1.
+            // rank 1.
         }
 
         // Sort the list based on distance in descending order
@@ -270,7 +285,7 @@ public class UserService {
         boolean foundUser = false;
         int lastPositiveValueRank = 0; // Tracks the last rank for positive values.
         int lastSeenValue = 0; // Tracks the last seen value to handle users with no activities correctly at
-                               // the end.
+        // the end.
 
         for (int i = 0; i < results.size(); i++) {
             String email = (String) results.get(i)[0];
@@ -302,8 +317,8 @@ public class UserService {
         // activities
         if (!foundUser) {
             return lastSeenValue > 0 ? lastPositiveValueRank + 1 : lastPositiveValueRank; // Assign rank one below the
-                                                                                          // last positive, or share
-                                                                                          // rank if last is zero
+            // last positive, or share
+            // rank if last is zero
         }
 
         return -1; // If user is not found in the list

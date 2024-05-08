@@ -5,11 +5,15 @@ import com.pvt152.StudentLoppet.model.Activity;
 import com.pvt152.StudentLoppet.model.University;
 import com.pvt152.StudentLoppet.service.ActivityService;
 import com.pvt152.StudentLoppet.service.UserService;
+import org.intellij.lang.annotations.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+
 
 @Controller
 @RequestMapping(path = "/studentloppet")
@@ -29,7 +33,7 @@ public class MainController {
 
     @GetMapping(path = "/addwithuni/{email}/{password}/{university}")
     public @ResponseBody String register(@PathVariable String password, @PathVariable String email,
-            @PathVariable University university) {
+                                         @PathVariable University university) {
         if (userService.emailOccupied(email)) {
             return new IllegalArgumentException("Email already exists").toString();
         }
@@ -68,10 +72,16 @@ public class MainController {
 
     // fixa så att user inte kan skriva otilåtna namn, fixa test
     @GetMapping(path = "/set/{email}/{first}/{last}")
-    public @ResponseBody boolean setName(@PathVariable String email, @PathVariable String first,
-            @PathVariable String last) {
-        return userService.setName(email, first, last);
+    public @ResponseBody ResponseEntity<?> setName(@PathVariable String email, @PathVariable String first, @PathVariable String last) {
+        try {
+            boolean result = userService.setName(email, first, last);
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
+
+
 
     // fixa så att user inte kan skriva något utöver integers, fixa test
     @GetMapping(path = "/increaseScore/{email}/{value}")
@@ -81,8 +91,8 @@ public class MainController {
 
     @PostMapping(path = "/activity/{email}/{distance}/{duration}")
     public ResponseEntity<?> logActivity(@PathVariable String email,
-            @PathVariable double distance,
-            @PathVariable long duration) {
+                                         @PathVariable double distance,
+                                         @PathVariable long duration) {
         try {
             Activity activity = activityService.logActivity(email, distance, duration);
             return ResponseEntity.ok(activity);
