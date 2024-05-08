@@ -83,6 +83,7 @@ public class MainController {
 
 
 
+
     // fixa så att user inte kan skriva något utöver integers, fixa test
     @GetMapping(path = "/increaseScore/{email}/{value}")
     public @ResponseBody String increaseScore(@PathVariable String email, @PathVariable int value) {

@@ -53,18 +53,13 @@ public class UserService {
         if (!isValidName(first) || !isValidName(last)) {
             throw new IllegalArgumentException("Names must contain only alphabetic characters and spaces.");
         }
-
-
         User u = userRepository.findById(email).orElseThrow(() -> new IllegalArgumentException("User not found for email: " + email));
-
-
         u.setFirstName(first);
         u.setLastName(last);
 
         userRepository.save(u);
         return true;
     }
-
     private boolean isValidName(String name) {
         return name.matches("^[A-Za-z ]+$");
     }
