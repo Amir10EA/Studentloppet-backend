@@ -1,6 +1,6 @@
 package com.pvt152.StudentLoppet;
 
-import com.pvt152.StudentLoppet.controller.MainController;
+import com.pvt152.StudentLoppet.controller.UserController;
 import com.pvt152.StudentLoppet.service.ActivityService;
 import com.pvt152.StudentLoppet.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(MainController.class)
+@WebMvcTest(UserController.class)
 public class MainControllerTest {
 
     @Autowired
@@ -44,21 +44,21 @@ public class MainControllerTest {
     @Test
     public void testValidNameSet() throws Exception {
         mockMvc.perform(get("/studentloppet/set/user@example.com/Anders/Andersson")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void testInvalidFirstName() throws Exception {
         mockMvc.perform(get("/studentloppet/set/user@example.com/Anders123/Andersson")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void testInvalidLastName() throws Exception {
         mockMvc.perform(get("/studentloppet/set/user@example.com/Anders/Andersson123")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 }

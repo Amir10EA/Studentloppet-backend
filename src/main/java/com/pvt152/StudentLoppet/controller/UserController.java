@@ -5,7 +5,11 @@ import com.pvt152.StudentLoppet.model.Activity;
 import com.pvt152.StudentLoppet.model.University;
 import com.pvt152.StudentLoppet.service.ActivityService;
 import com.pvt152.StudentLoppet.service.UserService;
-import org.intellij.lang.annotations.Pattern;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,18 +17,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-
-
 @Controller
 @RequestMapping(path = "/studentloppet")
 @CrossOrigin
-public class MainController {
+public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private ActivityService activityService;
 
     @GetMapping(value = "/hello")
     public @ResponseBody String hello() {
@@ -33,13 +32,15 @@ public class MainController {
 
     @GetMapping(path = "/addwithuni/{email}/{password}/{university}")
     public @ResponseBody String register(@PathVariable String password, @PathVariable String email,
-                                         @PathVariable University university) {
+            @PathVariable University university) {
         if (userService.emailOccupied(email)) {
             return new IllegalArgumentException("Email already exists").toString();
         }
-        if (!userService.validateEmail(email)) {
-            return new IllegalArgumentException("Invalid email address").toString();
-        }
+
+        // -- SLUT PÅ API CALLS--BORTKOMMENTERAD SÅLÄNGE-- //
+        // if (!userService.validateEmail(email)) {
+        // return new IllegalArgumentException("Invalid email address").toString();
+        // }
         userService.registerUser(email, password, university);
         return "User registered successfully";
     }
@@ -72,7 +73,8 @@ public class MainController {
 
     // fixa så att user inte kan skriva otilåtna namn, fixa test
     @GetMapping(path = "/set/{email}/{first}/{last}")
-    public @ResponseBody ResponseEntity<?> setName(@PathVariable String email, @PathVariable String first, @PathVariable String last) {
+    public @ResponseBody ResponseEntity<?> setName(@PathVariable String email, @PathVariable String first,
+            @PathVariable String last) {
         try {
             boolean result = userService.setName(email, first, last);
             return ResponseEntity.ok(result);
@@ -81,25 +83,10 @@ public class MainController {
         }
     }
 
-
-
-
     // fixa så att user inte kan skriva något utöver integers, fixa test
     @GetMapping(path = "/increaseScore/{email}/{value}")
     public @ResponseBody String increaseScore(@PathVariable String email, @PathVariable int value) {
         return userService.increaseScore(email, value);
-    }
-
-    @PostMapping(path = "/activity/{email}/{distance}/{duration}")
-    public ResponseEntity<?> logActivity(@PathVariable String email,
-                                         @PathVariable double distance,
-                                         @PathVariable long duration) {
-        try {
-            Activity activity = activityService.logActivity(email, distance, duration);
-            return ResponseEntity.ok(activity);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
-        }
     }
 
     @GetMapping(path = "/setWeight/{email}/{weight}")
@@ -115,6 +102,36 @@ public class MainController {
     @GetMapping(path = "/test")
     public @ResponseBody ResponseEntity<String> testEndpoint() {
         return ResponseEntity.ok("Test endpoint is working");
+    }
+
+    @GetMapping("/userRank/{email}")
+    public ResponseEntity<?> getUserRank(@PathVariable String email) {
+        try {
+            Map<String, Object> ranks = new HashMap<>();
+            int scoreRank = userService.getUserRankWithinUniversity(email); // Changed to the new method
+            int distanceRank = userService.getUserDistanceRankWithinUniversity(email);
+            int caloriesRank = userService.getUserCaloriesRankWithinUniversity(email);
+            int speedRank = userService.getUserSpeedRankWithinUniversity(email);
+
+            ranks.put("scoreRank", scoreRank == -1 ? Integer.MAX_VALUE : scoreRank);
+            ranks.put("distanceRank", distanceRank == -1 ? Integer.MAX_VALUE : distanceRank);
+            ranks.put("caloriesRank", caloriesRank == -1 ? Integer.MAX_VALUE : caloriesRank);
+            ranks.put("speedRank", speedRank == -1 ? Integer.MAX_VALUE : speedRank);
+
+            return ResponseEntity.ok(ranks);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/globalUserRank/{email}")
+    public ResponseEntity<?> getGlobalUserRank(@PathVariable String email) {
+        try {
+            int globalRank = userService.getUserRank(email);
+            return ResponseEntity.ok(Collections.singletonMap("globalRank", globalRank));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
     }
 
 }

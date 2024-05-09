@@ -48,24 +48,24 @@ public class UserService {
         userRepository.save(u);
         return u;
     }
+
     public boolean setName(String email, String first, String last) {
 
         if (!isValidName(first) || !isValidName(last)) {
             throw new IllegalArgumentException("Names must contain only alphabetic characters and spaces.");
         }
-        User u = userRepository.findById(email).orElseThrow(() -> new IllegalArgumentException("User not found for email: " + email));
+        User u = userRepository.findById(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found for email: " + email));
         u.setFirstName(first);
         u.setLastName(last);
 
         userRepository.save(u);
         return true;
     }
+
     private boolean isValidName(String name) {
         return name.matches("^[A-Za-z ]+$");
     }
-
-
-
 
     public Optional<UserDTO> login(String email, String password) {
         Optional<User> user = userRepository.findById(email);
@@ -129,24 +129,6 @@ public class UserService {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    public Map<String, Integer> countUsersByUniversity() {
-        return userRepository.countUsersByUniversity().stream()
-                .collect(Collectors.toMap(
-                        entry -> ((University) entry[0]).getDisplayName(),
-                        entry -> ((Number) entry[1]).intValue(),
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new));
-    }
-
-    public List<UserScoreDTO> calculateUserScores() {
-        return userRepository.findScoresByUser().stream()
-                .map(result -> new UserScoreDTO(
-                        (String) result[1], // userName as concatenated fullName
-                        (String) result[0], // email
-                        ((Number) result[2]).intValue())) // score
-                .collect(Collectors.toList());
     }
 
     public int getUserRank(String userEmail) {

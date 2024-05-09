@@ -1,15 +1,19 @@
 package com.pvt152.StudentLoppet.controller;
 
 import com.pvt152.StudentLoppet.dto.UniversityScoreDTO;
+import com.pvt152.StudentLoppet.dto.UserScoreDTO;
+import com.pvt152.StudentLoppet.dto.UserStats;
 import com.pvt152.StudentLoppet.model.University;
 import com.pvt152.StudentLoppet.service.ActivityService;
-import com.pvt152.StudentLoppet.service.UniversityLeaderboardService;
+import com.pvt152.StudentLoppet.service.LeaderboardService;
+import com.pvt152.StudentLoppet.service.UniversityService;
 import com.pvt152.StudentLoppet.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,56 +23,42 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RestController
-@RequestMapping(path = "/api/universities")
+@RequestMapping(path = "/api/leaderboard")
 public class LeaderboardController {
 
-    private final UniversityLeaderboardService leaderboardService;
-
     @Autowired
-    private UserService userService;
+    private LeaderboardService leaderboardService;
 
-    @Autowired
-    private ActivityService activityService;
-
-    public LeaderboardController(UniversityLeaderboardService leaderboardService) {
-        this.leaderboardService = leaderboardService;
+    @GetMapping("/sortedByScore/{university}")
+    public ResponseEntity<List<UserScoreDTO>> sortedByScore(@PathVariable University university) {
+        try {
+            List<UserScoreDTO> userScores = leaderboardService.getStudentsByScore(university);
+            return ResponseEntity.ok(userScores);
+        } catch (Exception e) {
+            // Return an empty list and a bad request status if there is an error
+            return ResponseEntity.badRequest().body(Collections.emptyList());
+        }
     }
 
-    @GetMapping(path = "/representation")
-    public @ResponseBody Map<String, String> getUniversityRepresentations() {
-        Comparator<String> caseInsensitiveOrder = String.CASE_INSENSITIVE_ORDER;
-
-        Map<String, String> universityMap = Stream.of(University.values())
-                .collect(Collectors.toMap(
-                        University::name,
-                        University::getDisplayName,
-                        (oldValue, newValue) -> oldValue,
-                        () -> new TreeMap<>(caseInsensitiveOrder)));
-
-        return universityMap;
+    @GetMapping("/sortedByDistance/{university}")
+    public ResponseEntity<List<UserStats>> sortedByDistance(@PathVariable University university) {
+        return ResponseEntity.ok(leaderboardService.getStudentsByDistance(university));
     }
 
-    @GetMapping(path = "/scoreboard")
-    public @ResponseBody ResponseEntity<List<UniversityScoreDTO>> getUniversityLeaderboard() {
-        List<UniversityScoreDTO> scores = leaderboardService.calculateUniversityScores();
-        return ResponseEntity.ok(scores);
+    @GetMapping("/sortedBySpeed/{university}")
+    public ResponseEntity<List<UserStats>> sortedBySpeed(@PathVariable University university) {
+        return ResponseEntity.ok(leaderboardService.getStudentsBySpeed(university));
     }
 
-    // test
-    @GetMapping(path = "/test")
-    public @ResponseBody ResponseEntity<String> testEndpoint() {
-        return ResponseEntity.ok("Test endpoint is working");
+    @GetMapping("/sortedByCalories/{university}")
+    public ResponseEntity<List<UserStats>> sortedByCalories(@PathVariable University university) {
+        return ResponseEntity.ok(leaderboardService.getStudentsByCaloriesBurned(university));
     }
 
-    @GetMapping("/universitiesByUserCount")
-    public ResponseEntity<Map<String, Integer>> getUniversitiesByUserCount() {
-        Map<String, Integer> universityUserCounts = userService.countUsersByUniversity();
-        return ResponseEntity.ok(universityUserCounts);
+    @GetMapping("/userLeaderboard")
+    public ResponseEntity<List<UserScoreDTO>> getUserLeaderboard() {
+        List<UserScoreDTO> userScores = leaderboardService.calculateUserScores();
+        return ResponseEntity.ok(userScores);
     }
 
-    @GetMapping("/universitiesByDistance")
-    public ResponseEntity<Map<String, Double>> getUniversitiesByDistance() {
-        Map<String, Double> universityDistances = activityService.sumDistanceByUniversity();
-        return ResponseEntity.ok(universityDistances);
-    }
 }
