@@ -41,13 +41,14 @@ public class ActivityService {
     public Activity logActivity(String userEmail, double distance, long duration) {
         User user = userRepository.findById(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
 
-        Activity activity = new Activity(distance, duration, user);
-        activity.setTimestamp(LocalDateTime.now());
-        activityRepository.save(activity);
-
         // Calculate and update score based on the activity
         int score = calculateScore(distance, duration);
         userService.increaseScore(userEmail, score);
+
+        Activity activity = new Activity(distance, duration, user, score); // pass the score to the constructor
+        activity.setTimestamp(LocalDateTime.now());
+        activityRepository.save(activity);
+
         return activity;
     }
 
@@ -119,14 +120,6 @@ public class ActivityService {
 
         return summary;
     }
-
-    ///////////////////////////////////////////////
-    ///////////////////////////////////////////////
-    ///////////////////////////////////////////////
-    ///////////////////////////////////////////////
-    ///////////////////////////////////////////////
-    ///////////////////////////////////////////////
-    ///////////////////////////////////////////////
 
     private Map<String, Object> calculateTotalDistanceAndDuration(List<Activity> activities, int totalScore) {
         double totalDistance = activities.stream().mapToDouble(Activity::getDistance).sum(); // Total distance run in km

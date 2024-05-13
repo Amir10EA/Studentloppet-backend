@@ -18,6 +18,7 @@ public class Activity {
     private long duration; // in minutes
     private LocalDateTime timestamp; // when the run was done
     private double caloriesBurned;
+    private int scoreGained;
 
     @ManyToOne
     @JoinColumn(name = "user_email")
@@ -27,9 +28,10 @@ public class Activity {
     public Activity() {
     }
 
-    public Activity(double distance, long duration, User user) {
+    public Activity(double distance, long duration, User user, int scoreGained) {
         this.distance = distance;
         this.duration = duration;
+        this.scoreGained = scoreGained;
         this.user = user;
         // Calculate calories burned if weight is provided
         if (user != null && user.getWeight() > 0) {
@@ -108,4 +110,11 @@ public class Activity {
         this.user = user;
     }
 
+    public int getScoreGained() {
+        return scoreGained;
+    }
+
+    public void setScoreGained(int scoreGained) {
+        this.scoreGained = scoreGained;
+    }
 }

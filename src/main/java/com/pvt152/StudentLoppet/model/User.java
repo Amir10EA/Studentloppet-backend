@@ -8,8 +8,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.Builder;
 
 @Entity
+@Table(name = "`user`")
 public class User {
 
     @Id
@@ -23,12 +26,27 @@ public class User {
     @Enumerated(EnumType.STRING)
     private University university;
 
+    @OneToOne
+    private ForgotPassword forgotPassword;
+
+    public User() {
+    }
+
+    @Builder
+    public User(String email, int score, String firstName, String lastName, String password, double weight,
+            University university) {
+        this.email = email;
+        this.score = score;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.weight = weight;
+        this.university = university;
+    }
+
     public String getEmail() {
         return email;
     }
-
-    @OneToOne
-    private ForgotPassword forgotPassword;
 
     public String getFirstName() {
         return firstName;

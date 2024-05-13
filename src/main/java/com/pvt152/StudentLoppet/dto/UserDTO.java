@@ -8,6 +8,7 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private University university;
+    private String universityDisplayName;
 
     public UserDTO(String email, int score, String firstName, String lastName, University university) {
         this.email = email;
@@ -15,6 +16,7 @@ public class UserDTO {
         this.firstName = firstName;
         this.lastName = lastName;
         this.university = university;
+        this.universityDisplayName = university.getDisplayName();
     }
 
     public String getEmail() {
@@ -55,5 +57,13 @@ public class UserDTO {
 
     public void setUniversity(University university) {
         this.university = university;
+    }
+
+    public String getUniversityDisplayName() {
+        return universityDisplayName;
+    }
+
+    public void setUniversityDisplayName(String universityDisplayName) {
+        this.universityDisplayName = universityDisplayName;
     }
 }
