@@ -31,8 +31,8 @@ public class Activity {
     public Activity(double distance, long duration, User user, int scoreGained) {
         this.distance = distance;
         this.duration = duration;
-        this.scoreGained = scoreGained;
         this.user = user;
+        this.scoreGained = scoreGained;
         // Calculate calories burned if weight is provided
         if (user != null && user.getWeight() > 0) {
             this.caloriesBurned = calculateCaloriesBurned(distance, duration, user.getWeight());
@@ -108,6 +108,14 @@ public class Activity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public int getScoreGained() {
+        return scoreGained;
+    }
+
+    public void setScoreGained(int scoreGained) {
+        this.scoreGained = scoreGained;
     }
 
 }
