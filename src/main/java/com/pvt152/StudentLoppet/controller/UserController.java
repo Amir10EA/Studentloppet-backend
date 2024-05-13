@@ -71,7 +71,6 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
-    // fixa så att user inte kan skriva otilåtna namn, fixa test
     @GetMapping(path = "/set/{email}/{first}/{last}")
     public @ResponseBody ResponseEntity<?> setName(@PathVariable String email, @PathVariable String first,
             @PathVariable String last) {
@@ -83,11 +82,18 @@ public class UserController {
         }
     }
 
-    // fixa så att user inte kan skriva något utöver integers, fixa test
     @GetMapping(path = "/increaseScore/{email}/{value}")
-    public @ResponseBody String increaseScore(@PathVariable String email, @PathVariable int value) {
-        return userService.increaseScore(email, value);
+    public ResponseEntity<String> increaseScore(@PathVariable String email, @PathVariable int value) {
+        try {
+            String result = userService.increaseScore(email, value);
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (IllegalStateException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
+
 
     @GetMapping("/setWeight/{email}/{weight}")
     public ResponseEntity<?> setWeight(@PathVariable String email, @PathVariable double weight) {
