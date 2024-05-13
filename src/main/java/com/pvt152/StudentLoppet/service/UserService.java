@@ -77,6 +77,11 @@ public class UserService {
     }
 
     public String increaseScore(String email, int value) {
+        if(value <0){
+            throw new IllegalArgumentException ("Score must be a positive number");
+
+        }
+
         User u = userRepository.findById(email).orElseThrow(() -> new IllegalStateException("User not found"));
         u.setScore(u.getScore() + value);
         userRepository.save(u);

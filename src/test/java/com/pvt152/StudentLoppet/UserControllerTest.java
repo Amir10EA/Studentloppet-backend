@@ -84,5 +84,22 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
+    @Test
+    public void testInvalidIncreaseScoreValue() throws Exception {
+        doThrow(new IllegalStateException("Score must be a positive number. No decimal accepted"))
+                .when(userService).increaseScore(anyString(), eq(-25));
+        mockMvc.perform(MockMvcRequestBuilders.get("/studentloppet/increaseScore/user@example.com/-25")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+    }
+    @Test
+    public void testValidIncreaseScoreValue() throws Exception {
+        when(userService.increaseScore(anyString(), eq(25))).thenReturn("OK");
+        mockMvc.perform(MockMvcRequestBuilders.get("/studentloppet/increaseScore/user@example.com/25")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
 
 }

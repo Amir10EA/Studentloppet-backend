@@ -110,11 +110,4 @@ public class Activity {
         this.user = user;
     }
 
-    public int getScoreGained() {
-        return scoreGained;
-    }
-
-    public void setScoreGained(int scoreGained) {
-        this.scoreGained = scoreGained;
-    }
 }
