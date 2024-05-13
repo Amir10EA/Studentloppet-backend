@@ -89,15 +89,20 @@ public class UserController {
         return userService.increaseScore(email, value);
     }
 
-    @GetMapping(path = "/setWeight/{email}/{weight}")
-    public ResponseEntity<Boolean> setWeightCall(@PathVariable String email, @PathVariable double weight) {
-        boolean result = userService.setWeight(email, weight);
-        if (result) {
-            return ResponseEntity.ok(true);
-        } else {
-            return ResponseEntity.badRequest().body(false);
+    @GetMapping("/setWeight/{email}/{weight}")
+    public ResponseEntity<?> setWeight(@PathVariable String email, @PathVariable double weight) {
+        try {
+            boolean result = userService.setWeight(email, weight);
+            if (result) {
+                return ResponseEntity.ok("Weight updated successfully.");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 
     @GetMapping(path = "/test")
     public @ResponseBody ResponseEntity<String> testEndpoint() {

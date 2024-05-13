@@ -330,14 +330,20 @@ public class UserService {
     }
 
     public boolean setWeight(String email, double weight) {
+        if (weight < 0) {
+            throw new IllegalArgumentException("Weight must be a positive number");
+        }
+
         User user = userRepository.findById(email).orElse(null);
         if (user == null) {
             return false;
         }
-        user.setWeight(weight);
 
+        user.setWeight(weight);
         userRepository.save(user);
         return true;
     }
+
+
 
 }

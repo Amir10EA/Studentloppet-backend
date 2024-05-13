@@ -13,15 +13,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(UserController.class)
-public class MainControllerTest {
+public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -33,11 +36,13 @@ public class MainControllerTest {
 
     @BeforeEach
     void setup() {
-        Mockito.when(userService.setName(anyString(), anyString(), anyString())).thenReturn(true);
+        when(userService.setName(anyString(), anyString(), anyString())).thenReturn(true);
         doThrow(new IllegalArgumentException("First name must contain only alphabetic characters and spaces."))
-                .when(userService).setName(anyString(), Mockito.eq("Anders123"), anyString());
+                .when(userService).setName(anyString(), eq("Anders123"), anyString());
         doThrow(new IllegalArgumentException("Last name must contain only alphabetic characters and spaces."))
-                .when(userService).setName(anyString(), anyString(), Mockito.eq("Andersson123"));
+                .when(userService).setName(anyString(), anyString(), eq("Andersson123"));
+
+
 
     }
 
@@ -61,4 +66,23 @@ public class MainControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void testInvalidWeight() throws Exception {
+        doThrow(new IllegalArgumentException("Weight must be a positive number"))
+            .when(userService).setWeight(anyString(), eq(-75.0));
+
+    mockMvc.perform(MockMvcRequestBuilders.get("/studentloppet/setWeight/user@example.com/-75")
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+    @Test
+    public void testValidWeight() throws Exception {
+        when(userService.setWeight(anyString(), eq(75.0))).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders.get("/studentloppet/setWeight/user@example.com/75")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+
 }
