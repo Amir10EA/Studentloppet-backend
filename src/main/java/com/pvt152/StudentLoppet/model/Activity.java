@@ -18,6 +18,7 @@ public class Activity {
     private long duration; // in minutes
     private LocalDateTime timestamp; // when the run was done
     private double caloriesBurned;
+    private int scoreGained;
 
     @ManyToOne
     @JoinColumn(name = "user_email")
@@ -106,6 +107,15 @@ public class Activity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+
+    public int getScoreGained() {
+        return scoreGained;
+    }
+
+    public void setScoreGained(int scoreGained) {
+        this.scoreGained = scoreGained;
     }
 
 }
