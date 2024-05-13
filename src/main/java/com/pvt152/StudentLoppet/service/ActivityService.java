@@ -43,13 +43,17 @@ public class ActivityService {
 
         Activity activity = new Activity(distance, duration, user);
         activity.setTimestamp(LocalDateTime.now());
+
+        int score = calculateScore(distance, duration);
+        activity.setScoreGained(score);
+
         activityRepository.save(activity);
 
-        // Calculate and update score based on the activity
-        int score = calculateScore(distance, duration);
         userService.increaseScore(userEmail, score);
+
         return activity;
     }
+
 
     // Ändra senare, hur många poäng ska en kilometer omvandlas till, just nu 1km =
     // 10poäng
@@ -84,7 +88,7 @@ public class ActivityService {
         // Get the rank of the user based on the past week's activities and add it to
         // the result
         int userRankPastWeek = userService.getUserRank(userEmail); // Assuming rank is based on total score not just
-                                                                   // past week
+        // past week
         result.put("userRank", userRankPastWeek);
 
         return result;
