@@ -86,18 +86,24 @@ public class ForgotPasswordController {
 
     @PostMapping("/verifyOtp/{otp}/{email}")
     public ResponseEntity<String> verifyOtp(@PathVariable Integer otp, @PathVariable String email) {
-        User user = userRepository.findById(email).orElseThrow(() -> new IllegalStateException("Email not found"));
+        try {
+            User user = userRepository.findById(email)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Email not found"));
+            ForgotPassword fPassword = forgotPasswordRepository.findByUserAndToken(otp, user)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid OTP"));
 
-        ForgotPassword fPassword = forgotPasswordRepository.findByUserAndToken(otp, user)
-                .orElseThrow(() -> new RuntimeException("Invalid token for : " + email));
+            if (fPassword.getExpirationDate().before(Date.from(Instant.now()))) {
+                forgotPasswordRepository.deleteById(fPassword.getId());
+                return new ResponseEntity<>("5 minutes have passed, your token has expired!",
+                        HttpStatus.EXPECTATION_FAILED);
+            }
 
-        if (fPassword.getExpirationDate().before(Date.from(Instant.now()))) {
-            forgotPasswordRepository.deleteById(fPassword.getId());
-            return new ResponseEntity<>("5 minutes have passed, your token has expired!",
-                    HttpStatus.EXPECTATION_FAILED);
+            return ResponseEntity.ok("Token verified!");
+        } catch (ResponseStatusException e) {
+            // Instead of trying to extract status code from the exception, directly return
+            // the ResponseEntity with the message and status.
+            return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
         }
-
-        return ResponseEntity.ok("token verified!");
     }
 
     @PostMapping("/changePassword/{email}")
