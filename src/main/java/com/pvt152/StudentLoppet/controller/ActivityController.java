@@ -28,18 +28,20 @@ public class ActivityController {
     // Denna endpoint används för att posta nya aktiviteter till databasen.
     @PostMapping(path = "/addActivity/{email}/{distance}/{duration}")
     public ResponseEntity<?> logActivity(@PathVariable String email,
-            @PathVariable("distance") double distance,
-            @PathVariable("duration") long duration) {
+                                         @PathVariable("distance") double distance,
+                                         @PathVariable("duration") long duration) {
         try {
-            if (Double.isNaN(distance) || duration < 0) {
+            if (Double.isNaN(distance) || distance < 0 || duration < 0) {
                 throw new IllegalArgumentException("Invalid distance or duration");
             }
+
             Activity activity = activityService.logActivity(email, distance, duration);
             return ResponseEntity.ok(activity);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
+
 
     // Denna endpoint används för få fram en sammanfattning över alla aktiviterer
     // från en användare (sammanlagd distance, duration, calories burned, avarage
