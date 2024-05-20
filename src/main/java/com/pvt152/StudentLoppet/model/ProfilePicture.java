@@ -1,6 +1,8 @@
 package com.pvt152.StudentLoppet.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 public class ProfilePicture {
@@ -11,6 +13,8 @@ public class ProfilePicture {
 
     @Lob
     @Column(columnDefinition = "LONGBLOB")
+    @JsonIgnore
+
     private byte[] image;
 
     @Column(unique = true)
