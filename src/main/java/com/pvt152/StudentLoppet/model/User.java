@@ -1,14 +1,6 @@
 package com.pvt152.StudentLoppet.model;
 
-import java.util.List;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Builder;
 
 @Entity
@@ -26,6 +18,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private University university;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_picture_id", referencedColumnName = "id")
+    private ProfilePicture profilePicture;
+
     @OneToOne
     private ForgotPassword forgotPassword;
 
@@ -34,7 +30,7 @@ public class User {
 
     @Builder
     public User(String email, int score, String firstName, String lastName, String password, double weight,
-            University university) {
+                University university, ProfilePicture profilePicture) {
         this.email = email;
         this.score = score;
         this.firstName = firstName;
@@ -42,26 +38,16 @@ public class User {
         this.password = password;
         this.weight = weight;
         this.university = university;
+        this.profilePicture = profilePicture;
     }
 
+    // Getters and Setters
     public String getEmail() {
         return email;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public University getUniversity() {
-        return university;
-    }
-
-    public String getPassword() {
-        return password;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public int getScore() {
@@ -72,20 +58,32 @@ public class User {
         this.score = score;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getFirstName() {
+        return firstName;
     }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public University getUniversity() {
+        return university;
     }
 
     public void setUniversity(University university) {
@@ -100,4 +98,11 @@ public class User {
         this.weight = weight;
     }
 
+    public ProfilePicture getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(ProfilePicture profilePicture) {
+        this.profilePicture = profilePicture;
+    }
 }
