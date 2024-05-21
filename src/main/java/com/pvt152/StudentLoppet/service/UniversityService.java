@@ -1,6 +1,5 @@
 package com.pvt152.StudentLoppet.service;
 
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,25 +48,25 @@ public class UniversityService {
             }
             actualRank++;
         }
-        return -1;
+        return -1; // In case the university is not found
     }
 
-    public List<UniversityMetricDTO> countUsersByUniversity() {
+    public Map<String, Integer> countUsersByUniversity() {
         return userRepository.countUsersByUniversity().stream()
-                .map(result -> new UniversityMetricDTO(
-                        ((University) result[0]).getDisplayName(),
-                        ((Number) result[1]).intValue()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(
+                        entry -> ((University) entry[0]).getDisplayName(),
+                        entry -> ((Number) entry[1]).intValue(),
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new));
     }
 
-    public List<UniversityMetricDTO> sumDistanceByUniversity() {
+    public Map<String, Double> sumDistanceByUniversity() {
         return activityRepository.sumDistanceByUniversity().stream()
-                .map(result -> new UniversityMetricDTO(
-                        ((University) result[0]).getDisplayName(),
-                        ((Number) result[1]).doubleValue()))
-                .sorted(Comparator.comparingDouble(UniversityMetricDTO::getMetricAsDouble).reversed()) // Sorting in
-                                                                                                       // descending
-                                                                                                       // order
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(
+                        entry -> ((University) entry[0]).getDisplayName(),
+                        entry -> ((Number) entry[1]).doubleValue(),
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new));
     }
+
 }
