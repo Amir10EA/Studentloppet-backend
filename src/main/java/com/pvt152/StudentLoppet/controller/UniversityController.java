@@ -2,10 +2,7 @@ package com.pvt152.StudentLoppet.controller;
 
 import com.pvt152.StudentLoppet.dto.UniversityMetricDTO;
 import com.pvt152.StudentLoppet.model.University;
-import com.pvt152.StudentLoppet.service.ActivityService;
-import com.pvt152.StudentLoppet.service.LeaderboardService;
 import com.pvt152.StudentLoppet.service.UniversityService;
-import com.pvt152.StudentLoppet.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,14 +42,14 @@ public class UniversityController {
     }
 
     @GetMapping("/universitiesByUserCount")
-    public ResponseEntity<Map<String, Integer>> getUniversitiesByUserCount() {
-        Map<String, Integer> universityUserCounts = universityService.countUsersByUniversity();
+    public ResponseEntity<List<UniversityMetricDTO>> getUniversitiesByUserCount() {
+        List<UniversityMetricDTO> universityUserCounts = universityService.countUsersByUniversity();
         return ResponseEntity.ok(universityUserCounts);
     }
 
     @GetMapping("/universitiesByDistance")
-    public ResponseEntity<Map<String, Double>> getUniversitiesByDistance() {
-        Map<String, Double> universityDistances = universityService.sumDistanceByUniversity();
+    public ResponseEntity<List<UniversityMetricDTO>> getUniversitiesByDistance() {
+        List<UniversityMetricDTO> universityDistances = universityService.sumDistanceByUniversity();
         return ResponseEntity.ok(universityDistances);
     }
 

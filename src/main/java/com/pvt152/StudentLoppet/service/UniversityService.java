@@ -1,8 +1,7 @@
 package com.pvt152.StudentLoppet.service;
 
-import java.util.LinkedHashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,22 +50,20 @@ public class UniversityService {
         return -1; // In case the university is not found
     }
 
-    public Map<String, Integer> countUsersByUniversity() {
+    public List<UniversityMetricDTO> countUsersByUniversity() {
         return userRepository.countUsersByUniversity().stream()
-                .collect(Collectors.toMap(
-                        entry -> ((University) entry[0]).getDisplayName(),
-                        entry -> ((Number) entry[1]).intValue(),
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new));
+                .map(result -> new UniversityMetricDTO(
+                        ((University) result[0]).getDisplayName(),
+                        ((Number) result[1]).intValue()))
+                .collect(Collectors.toList());
     }
 
-    public Map<String, Double> sumDistanceByUniversity() {
+    public List<UniversityMetricDTO> sumDistanceByUniversity() {
         return activityRepository.sumDistanceByUniversity().stream()
-                .collect(Collectors.toMap(
-                        entry -> ((University) entry[0]).getDisplayName(),
-                        entry -> ((Number) entry[1]).doubleValue(),
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new));
+                .map(result -> new UniversityMetricDTO(
+                        ((University) result[0]).getDisplayName(),
+                        ((Number) result[1]).doubleValue()))
+                .sorted(Comparator.comparingDouble(UniversityMetricDTO::getMetricAsDouble).reversed())
+                .collect(Collectors.toList());
     }
-
 }
