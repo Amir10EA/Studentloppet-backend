@@ -38,12 +38,13 @@ public class UserService {
     @Autowired
     private ActivityRepository activityRepository;
 
-    public User registerUser(String email, String password, University university) {
+    public User registerUser(UserDTO userDTO) {
         User u = new User();
-        u.setEmail(email);
-        u.setPassword(passwordHashing(password));
-        if (university != null) {
-            u.setUniversity(university);
+        u.setEmail(userDTO.getEmail());
+        u.setPassword(passwordHashing(userDTO.getPassword()));
+        u.setAge(userDTO.getAge());
+        if (userDTO.getUniversity() != null) {
+            u.setUniversity(userDTO.getUniversity());
         }
         userRepository.save(u);
         return u;
@@ -77,8 +78,8 @@ public class UserService {
     }
 
     public String increaseScore(String email, int value) {
-        if(value <0){
-            throw new IllegalArgumentException ("Score must be a positive number");
+        if (value < 0) {
+            throw new IllegalArgumentException("Score must be a positive number");
 
         }
 
@@ -109,7 +110,8 @@ public class UserService {
                 user.getScore(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getUniversity()));
+                user.getUniversity(),
+                user.getAge()));
     }
 
     public boolean emailOccupied(String email) {
@@ -348,7 +350,5 @@ public class UserService {
         userRepository.save(user);
         return true;
     }
-
-
 
 }

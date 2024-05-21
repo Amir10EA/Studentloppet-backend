@@ -30,32 +30,28 @@ public class UserController {
         return "helloworld";
     }
 
-    @GetMapping(path = "/addwithuni/{email}/{password}/{university}")
-    public @ResponseBody String register(@PathVariable String password, @PathVariable String email,
-            @PathVariable University university) {
-        if (userService.emailOccupied(email)) {
+    @PostMapping(path = "/register")
+    public @ResponseBody String register(@RequestBody UserDTO userDTO) {
+        if (userService.emailOccupied(userDTO.getEmail())) {
             return new IllegalArgumentException("Email already exists").toString();
         }
 
-        // -- SLUT PÅ API CALLS--BORTKOMMENTERAD SÅLÄNGE-- //
-        // if (!userService.validateEmail(email)) {
-        // return new IllegalArgumentException("Invalid email address").toString();
-        // }
-        userService.registerUser(email, password, university);
+        userService.registerUser(userDTO);
         return "User registered successfully";
     }
 
-    @GetMapping(path = "/add/{email}/{password}")
-    public @ResponseBody String register(@PathVariable String password, @PathVariable String email) {
-        if (userService.emailOccupied(email)) {
-            return new IllegalArgumentException("Email already exists").toString();
-        }
-        if (!userService.validateEmail(email)) {
-            return new IllegalArgumentException("Invalid email address").toString();
-        }
-        userService.registerUser(email, password, null);
-        return "saved";
-    }
+    // @GetMapping(path = "/add/{email}/{password}")
+    // public @ResponseBody String register(@PathVariable String password,
+    // @PathVariable String email) {
+    // if (userService.emailOccupied(email)) {
+    // return new IllegalArgumentException("Email already exists").toString();
+    // }
+    // if (!userService.validateEmail(email)) {
+    // return new IllegalArgumentException("Invalid email address").toString();
+    // }
+    // userService.registerUser(email, password, null);
+    // return "saved";
+    // }
 
     @GetMapping(path = "/getUser/{email}")
     public ResponseEntity<UserDTO> getUser(@PathVariable String email) {
@@ -94,7 +90,6 @@ public class UserController {
         }
     }
 
-
     @GetMapping("/setWeight/{email}/{weight}")
     public ResponseEntity<?> setWeight(@PathVariable String email, @PathVariable double weight) {
         try {
@@ -108,7 +103,6 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 
     @GetMapping(path = "/test")
     public @ResponseBody ResponseEntity<String> testEndpoint() {

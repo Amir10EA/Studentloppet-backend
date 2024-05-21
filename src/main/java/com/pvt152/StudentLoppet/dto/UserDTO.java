@@ -9,14 +9,32 @@ public class UserDTO {
     private String lastName;
     private University university;
     private String universityDisplayName;
+    private int age;
+    private String password;
 
-    public UserDTO(String email, int score, String firstName, String lastName, University university) {
+    public UserDTO() {
+    }
+
+    public UserDTO(String email, int score, String firstName, String lastName, University university, int age,
+            String password) {
         this.email = email;
         this.score = score;
         this.firstName = firstName;
         this.lastName = lastName;
         this.university = university;
-        this.universityDisplayName = university.getDisplayName();
+        this.universityDisplayName = university != null ? university.getDisplayName() : null;
+        this.age = age;
+        this.password = password;
+    }
+
+    public UserDTO(String email, int score, String firstName, String lastName, University university, int age) {
+        this.email = email;
+        this.score = score;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.university = university;
+        this.universityDisplayName = university != null ? university.getDisplayName() : null;
+        this.age = age;
     }
 
     public String getEmail() {
@@ -66,4 +84,21 @@ public class UserDTO {
     public void setUniversityDisplayName(String universityDisplayName) {
         this.universityDisplayName = universityDisplayName;
     }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 }
