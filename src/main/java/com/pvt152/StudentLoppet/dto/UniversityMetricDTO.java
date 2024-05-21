@@ -1,6 +1,6 @@
 package com.pvt152.StudentLoppet.dto;
 
-import com.pvt152.StudentLoppet.model.University;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class UniversityMetricDTO {
     private String universityDisplayName;
@@ -21,6 +21,11 @@ public class UniversityMetricDTO {
 
     public Number getMetric() {
         return metric;
+    }
+
+    @JsonIgnore
+    public double getMetricAsDouble() {
+        return metric.doubleValue();
     }
 
     public void setMetric(Number metric) {

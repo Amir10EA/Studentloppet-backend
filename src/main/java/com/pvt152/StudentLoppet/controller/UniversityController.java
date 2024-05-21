@@ -46,14 +46,14 @@ public class UniversityController {
     }
 
     @GetMapping("/universitiesByUserCount")
-    public ResponseEntity<Map<String, Integer>> getUniversitiesByUserCount() {
-        Map<String, Integer> universityUserCounts = universityService.countUsersByUniversity();
+    public ResponseEntity<List<UniversityMetricDTO>> getUniversitiesByUserCount() {
+        List<UniversityMetricDTO> universityUserCounts = universityService.countUsersByUniversity();
         return ResponseEntity.ok(universityUserCounts);
     }
 
     @GetMapping("/universitiesByDistance")
-    public ResponseEntity<Map<String, Double>> getUniversitiesByDistance() {
-        Map<String, Double> universityDistances = universityService.sumDistanceByUniversity();
+    public ResponseEntity<List<UniversityMetricDTO>> getUniversitiesByDistance() {
+        List<UniversityMetricDTO> universityDistances = universityService.sumDistanceByUniversity();
         return ResponseEntity.ok(universityDistances);
     }
 

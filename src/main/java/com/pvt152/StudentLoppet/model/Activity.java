@@ -61,7 +61,6 @@ public class Activity {
         return met * weightInKg * durationInHours;
     }
 
-    // Getters and setters (if needed for your framework, such as Spring Boot)
     public Long getId() {
         return id;
     }
