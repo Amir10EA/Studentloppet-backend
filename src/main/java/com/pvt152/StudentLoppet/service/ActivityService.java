@@ -3,7 +3,7 @@ package com.pvt152.StudentLoppet.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.pvt152.StudentLoppet.dto.UniversityScoreDTO;
+import com.pvt152.StudentLoppet.dto.UniversityMetricDTO;
 import com.pvt152.StudentLoppet.dto.UserScoreDTO;
 import com.pvt152.StudentLoppet.dto.UserStats;
 import com.pvt152.StudentLoppet.model.Activity;

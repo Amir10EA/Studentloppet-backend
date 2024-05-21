@@ -30,14 +30,29 @@ public class UserController {
         return "helloworld";
     }
 
-    @PostMapping(path = "/register")
-    public @ResponseBody String register(@RequestBody UserDTO userDTO) {
-        if (userService.emailOccupied(userDTO.getEmail())) {
+    @PostMapping(path = "/addwithuni/{email}/{password}/{university}")
+    public @ResponseBody String register(@PathVariable String password, @PathVariable String email,
+            @PathVariable University university) {
+        if (userService.emailOccupied(email)) {
             return new IllegalArgumentException("Email already exists").toString();
         }
 
-        userService.registerUser(userDTO);
+        // -- SLUT PÅ API CALLS--BORTKOMMENTERAD SÅLÄNGE-- //
+        // if (!userService.validateEmail(email)) {
+        // return new IllegalArgumentException("Invalid email address").toString();
+        // }
+        userService.registerUser(email, password, university);
         return "User registered successfully";
+    }
+
+    @PostMapping(path = "/setYearOfBirth/{email}/{yearOfBirth}")
+    public @ResponseBody String setYearOfBirth(@PathVariable String email, @PathVariable int yearOfBirth) {
+        if (!userService.emailOccupied(email)) {
+            return new IllegalArgumentException("Email does not exist").toString();
+        }
+
+        userService.setYearOfBirth(email, yearOfBirth);
+        return "Year of birth set successfully";
     }
 
     // @GetMapping(path = "/add/{email}/{password}")
@@ -52,6 +67,16 @@ public class UserController {
     // userService.registerUser(email, password, null);
     // return "saved";
     // }
+    @PostMapping(path = "/set/{email}/{first}/{last}")
+    public @ResponseBody ResponseEntity<?> setName(@PathVariable String email, @PathVariable String first,
+            @PathVariable String last) {
+        try {
+            boolean result = userService.setName(email, first, last);
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @GetMapping(path = "/getUser/{email}")
     public ResponseEntity<UserDTO> getUser(@PathVariable String email) {
@@ -65,17 +90,6 @@ public class UserController {
         return userService.login(email, password)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
-    }
-
-    @GetMapping(path = "/set/{email}/{first}/{last}")
-    public @ResponseBody ResponseEntity<?> setName(@PathVariable String email, @PathVariable String first,
-            @PathVariable String last) {
-        try {
-            boolean result = userService.setName(email, first, last);
-            return ResponseEntity.ok(result);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
     }
 
     @GetMapping(path = "/increaseScore/{email}/{value}")

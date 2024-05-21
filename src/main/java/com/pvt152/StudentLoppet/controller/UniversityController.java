@@ -1,6 +1,7 @@
 package com.pvt152.StudentLoppet.controller;
 
-import com.pvt152.StudentLoppet.dto.UniversityScoreDTO;
+import com.pvt152.StudentLoppet.dto.UniversityMetricDTO;
+import com.pvt152.StudentLoppet.dto.UniversityMetricDTO;
 import com.pvt152.StudentLoppet.model.University;
 import com.pvt152.StudentLoppet.service.ActivityService;
 import com.pvt152.StudentLoppet.service.LeaderboardService;
@@ -39,8 +40,8 @@ public class UniversityController {
     }
 
     @GetMapping(path = "/scoreboard")
-    public @ResponseBody ResponseEntity<List<UniversityScoreDTO>> getUniversityLeaderboard() {
-        List<UniversityScoreDTO> scores = universityService.calculateUniversityScores();
+    public @ResponseBody ResponseEntity<List<UniversityMetricDTO>> getUniversityLeaderboard() {
+        List<UniversityMetricDTO> scores = universityService.calculateUniversityScores();
         return ResponseEntity.ok(scores);
     }
 

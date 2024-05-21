@@ -14,7 +14,7 @@ public class User {
     private String lastName;
     private String password;
     private double weight;
-    private int age;
+    private int yearOfBirth;
 
     @Enumerated(EnumType.STRING)
     private University university;
@@ -30,17 +30,17 @@ public class User {
     }
 
     @Builder
-    public User(String email, int score, String firstName, String lastName, String password, double weight, int age,
-            University university, ProfilePicture profilePicture) {
+    public User(String email, int score, String firstName, String lastName, String password, double weight,
+            University university, ProfilePicture profilePicture, int yearOfBirth) {
         this.email = email;
         this.score = score;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.weight = weight;
-        this.age = age;
         this.university = university;
         this.profilePicture = profilePicture;
+        this.yearOfBirth = yearOfBirth;
     }
 
     // Getters and Setters
@@ -108,11 +108,11 @@ public class User {
         this.profilePicture = profilePicture;
     }
 
-    public int getAge() {
-        return age;
+    public int getYearOfBirth() {
+        return yearOfBirth;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setYearOfBirth(int yearOfBirth) {
+        this.yearOfBirth = yearOfBirth;
     }
 }

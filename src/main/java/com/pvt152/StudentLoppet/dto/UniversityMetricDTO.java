@@ -2,13 +2,13 @@ package com.pvt152.StudentLoppet.dto;
 
 import com.pvt152.StudentLoppet.model.University;
 
-public class UniversityScoreDTO {
+public class UniversityMetricDTO {
     private String universityDisplayName;
-    private int score;
+    private Number metric;
 
-    public UniversityScoreDTO(String universityDisplayName, int score) {
+    public UniversityMetricDTO(String universityDisplayName, Number metric) {
         this.universityDisplayName = universityDisplayName;
-        this.score = score;
+        this.metric = metric;
     }
 
     public String getUniversityDisplayName() {
@@ -19,11 +19,11 @@ public class UniversityScoreDTO {
         this.universityDisplayName = universityDisplayName;
     }
 
-    public int getScore() {
-        return score;
+    public Number getMetric() {
+        return metric;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setMetric(Number metric) {
+        this.metric = metric;
     }
 }

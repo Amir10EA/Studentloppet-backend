@@ -38,16 +38,21 @@ public class UserService {
     @Autowired
     private ActivityRepository activityRepository;
 
-    public User registerUser(UserDTO userDTO) {
+    public User registerUser(String email, String password, University university) {
         User u = new User();
-        u.setEmail(userDTO.getEmail());
-        u.setPassword(passwordHashing(userDTO.getPassword()));
-        u.setAge(userDTO.getAge());
-        if (userDTO.getUniversity() != null) {
-            u.setUniversity(userDTO.getUniversity());
+        u.setEmail(email);
+        u.setPassword(passwordHashing(password));
+        if (university != null) {
+            u.setUniversity(university);
         }
         userRepository.save(u);
         return u;
+    }
+
+    public void setYearOfBirth(String email, int yearOfBirth) {
+        User user = userRepository.findById(email).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setYearOfBirth(yearOfBirth);
+        userRepository.save(user);
     }
 
     public boolean setName(String email, String first, String last) {
@@ -111,7 +116,7 @@ public class UserService {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getUniversity(),
-                user.getAge()));
+                user.getYearOfBirth()));
     }
 
     public boolean emailOccupied(String email) {
