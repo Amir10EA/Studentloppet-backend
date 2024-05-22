@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-
+// Ändra så att bilden hämtas med user email
 @RestController
 @RequestMapping("/api/profile-pictures")
 public class ProfilePictureController {
@@ -26,22 +26,45 @@ public class ProfilePictureController {
             profilePictureService.saveProfilePicture(email, file);
             return "Profile picture uploaded successfully";
         } catch (IOException e) {
-            throw new IllegalArgumentException("Error uploading profile picture", e);
+            return "Error uploading profile picture";
         }
     }
 
-
-    @GetMapping("/{filename}")
-    public ResponseEntity<byte[]> getProfilePicture(@PathVariable String filename) {
-        ProfilePicture profilePicture = profilePictureService.getProfilePicture(filename);
+    @GetMapping("/by-email/{email}")
+    public ResponseEntity<byte[]> getProfilePictureByEmail(@PathVariable String email) {
+        ProfilePicture profilePicture = profilePictureService.getProfilePictureByEmail(email);
         if (profilePicture == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.parseMediaType(profilePicture.getMimeType()));
-    headers.setContentDisposition(ContentDisposition.inline().filename(profilePicture.getFilename()).build());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(profilePicture.getMimeType()));
+        headers.setContentDisposition(ContentDisposition.inline().filename(profilePicture.getFilename()).build());
 
-    return new ResponseEntity<>(profilePicture.getImage(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(profilePicture.getImage(), headers, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/remove/{email}")
+    public ResponseEntity<String> removeProfilePicture(@PathVariable String email) {
+        try {
+            profilePictureService.removeProfilePicture(email);
+            return ResponseEntity.ok("Profile picture removed successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error removing profile picture");
         }
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<String> updateProfilePicture(@RequestParam("email") String email, @RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is missing");
+        }
+        try {
+            profilePictureService.updateProfilePicture(email, file);
+            return ResponseEntity.ok("Profile picture updated successfully");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating profile picture");
+        }
+
+    }
+}

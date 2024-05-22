@@ -2,6 +2,7 @@ package com.pvt152.StudentLoppet.repository;
 
 import java.util.List;
 
+import com.pvt152.StudentLoppet.dto.UserScoreDTO;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -41,4 +42,9 @@ public interface UserRepository extends CrudRepository<User, String> {
     @Query("SELECT u.email, u.score FROM User u WHERE u.university = :university ORDER BY u.score DESC")
     List<Object[]> findScoresByUniversity(@Param("university") University university);
 
+    User findByEmail(String email);
+
+
+
 }
+
