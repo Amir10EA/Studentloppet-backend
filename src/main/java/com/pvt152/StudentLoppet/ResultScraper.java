@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,13 +23,12 @@ public class ResultScraper {
     @Autowired
     private MidnattsloppResultRepository resultRepository;
 
-    // This method will be scheduled to run daily at 17:50
-    @Scheduled(cron = "0 57 17 * * *", zone = "Europe/Stockholm")
+    // scheduled run 18:26 on May 22 2024
+    @Scheduled(cron = "0 27 18 22 5 ?", zone = "Europe/Stockholm")
     public void scrapeAllClasses() {
-        // Check if the current date is May 22, 2024
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Stockholm"));
         if (now.toLocalDate().equals(LocalDate.of(2024, 5, 22))) {
-            List<String> classIds = Arrays.asList("20003125", "10003125", "20003127", "10003127");
+            List<String> classIds = fetchClassIdsFor2023();
             for (String classId : classIds) {
                 scrapeClass(classId);
             }
@@ -37,6 +36,28 @@ public class ResultScraper {
         } else {
             System.out.println("Today is not May 22, 2024. Skipping the scraping task.");
         }
+    }
+
+    public List<String> fetchClassIdsFor2023() {
+        List<String> classIds = new ArrayList<>();
+        String url = "https://history.midnattsloppet.com/?EventGroupId=96&Year=2023";
+
+        try {
+            Document doc = Jsoup.connect(url).get();
+            Elements options = doc.select("select#ClassId option");
+
+            for (Element option : options) {
+                String value = option.attr("value");
+                if (!value.isEmpty()) {
+                    classIds.add(value);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Fetched ClassIds for 2023: " + classIds);
+        return classIds;
     }
 
     public void scrapeClass(String classId) {
@@ -74,7 +95,7 @@ public class ResultScraper {
         System.out.println("Number of rows found: " + rows.size());
 
         if (rows.isEmpty()) {
-            return false; // No more rows to process
+            return false;
         }
 
         for (Element row : rows) {
@@ -106,16 +127,16 @@ public class ResultScraper {
                 e.printStackTrace();
             }
         }
-        return true; // Rows were processed successfully
+        return true;
     }
 
     private String extractRaceClass(Document doc) {
         Element raceClassElement = doc.selectFirst("div.col-12:contains(Midnattsloppet Stockholm 2023)");
         if (raceClassElement != null) {
             String raceClassText = raceClassElement.text();
-            return raceClassText; // Return the full race class description
+            return raceClassText;
         }
-        return "Unknown"; // Default value in case extraction fails
+        return "Unknown";
     }
 
     private String extractTime(Element row) {
@@ -123,18 +144,15 @@ public class ResultScraper {
         if (timeElement != null) {
             return timeElement.text();
         } else {
-            // If the time is not in an <a> tag, extract it directly from the div
             String timeText = row.select("div.col-3.col-sm-2").text();
-            // Ensure the time is a valid format
             if (timeText.matches("\\d{2}:\\d{2}:\\d{2}")) {
                 return timeText;
             }
         }
-        return ""; // Return an empty string if time is not found
+        return "";
     }
 
     private int extractYearOfBirth(String text, String name) {
-        // First, try to extract year from text before the runner's name
         String[] parts = text.split(name);
         if (parts.length > 0) {
             String partBeforeName = parts[0];
@@ -144,7 +162,6 @@ public class ResultScraper {
             }
         }
 
-        // If not found, try to extract year from text after the runner's name
         if (parts.length > 1) {
             String partAfterName = parts[1];
             String yearStr = extractYearString(partAfterName);
@@ -153,14 +170,14 @@ public class ResultScraper {
             }
         }
 
-        return 0; // Return a default value or handle the error appropriately
+        return 0;
     }
 
     private String extractYearString(String part) {
-        part = part.replaceAll("\\D+", ""); // Remove non-numeric characters
+        part = part.replaceAll("\\D+", "");
         if (!part.isEmpty() && part.length() == 2) {
-            return part; // Return if it is a valid two-digit year
+            return part;
         }
-        return null; // Return null if no valid year found
+        return null;
     }
 }
