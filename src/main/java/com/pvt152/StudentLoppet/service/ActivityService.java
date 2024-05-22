@@ -38,7 +38,7 @@ public class ActivityService {
     @Autowired
     private UniversityService universityService;
 
-    public Activity logActivity(String userEmail, double distance, long duration) {
+    public Activity logActivity(String userEmail, double distance, double duration) {
         User user = userRepository.findById(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
 
         // Calculate and update score based on the activity
@@ -52,9 +52,7 @@ public class ActivityService {
         return activity;
     }
 
-    // Ändra senare, hur många poäng ska en kilometer omvandlas till, just nu 1km =
-    // 10poäng
-    private int calculateScore(double distance, long duration) {
+    private int calculateScore(double distance, double duration) {
         if (duration == 0)
             return 0;
         double durationInHours = duration / 60.0;
@@ -123,7 +121,7 @@ public class ActivityService {
 
     private Map<String, Object> calculateTotalDistanceAndDuration(List<Activity> activities, int totalScore) {
         double totalDistance = activities.stream().mapToDouble(Activity::getDistance).sum(); // Total distance run in km
-        long totalDuration = activities.stream().mapToLong(Activity::getDuration).sum(); // Total time run in min
+        double totalDuration = activities.stream().mapToDouble(Activity::getDuration).sum(); // Total time run in min
 
         double minPerKm = 0;
         if (totalDistance > 0) {
