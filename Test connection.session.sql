@@ -1,2 +1,2 @@
-DELETE FROM midnattslopp_runner;
+DELETE FROM runner_result
 

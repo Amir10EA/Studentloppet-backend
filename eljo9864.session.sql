@@ -1,1 +1,1 @@
-DROP TABLE user_seq;
+ALTER TABLE runner_result DROP COLUMN distance;
