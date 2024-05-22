@@ -21,7 +21,7 @@ public class Activity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private double distance;
-    private long duration;
+    private double duration;
     private LocalDateTime timestamp;
     private double caloriesBurned;
     private int scoreGained;
@@ -33,7 +33,7 @@ public class Activity {
     public Activity() {
     }
 
-    public Activity(double distance, long duration, User user, int scoreGained) {
+    public Activity(double distance, double duration, User user, int scoreGained) {
         this.distance = distance;
         this.duration = duration;
         this.user = user;
@@ -47,7 +47,7 @@ public class Activity {
         }
     }
 
-    private BigDecimal calculateCaloriesBurned(double distanceInKm, long durationInMinutes, double weightInKg) {
+    private BigDecimal calculateCaloriesBurned(double distanceInKm, double durationInMinutes, double weightInKg) {
         if (distanceInKm <= 0 || durationInMinutes <= 0 || weightInKg <= 0) {
             return BigDecimal.ZERO;
         }
@@ -108,11 +108,11 @@ public class Activity {
         this.distance = distance;
     }
 
-    public long getDuration() {
+    public double getDuration() {
         return duration;
     }
 
-    public void setDuration(long duration) {
+    public void setDuration(double duration) {
         this.duration = duration;
     }
 
