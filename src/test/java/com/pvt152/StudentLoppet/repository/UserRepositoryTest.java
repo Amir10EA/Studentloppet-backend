@@ -1,5 +1,6 @@
 package com.pvt152.StudentLoppet.repository;
 
+import com.pvt152.StudentLoppet.model.ProfilePicture;
 import com.pvt152.StudentLoppet.model.User;
 import com.pvt152.StudentLoppet.model.University;
 
@@ -144,6 +145,14 @@ public class UserRepositoryTest {
 
         @Test
         public void UserRepositoryTest_findScoresByUser_ReturnsCorrectUserData() {
+                // Arrange
+                ProfilePicture profilePicture1 = new ProfilePicture();
+                profilePicture1.setFilename("pic1.jpg");
+                profilePicture1.setMimeType("image/jpeg");
+
+                ProfilePicture profilePicture2 = new ProfilePicture();
+                profilePicture2.setFilename("pic2.jpg");
+                profilePicture2.setMimeType("image/jpeg");
 
                 // Arrange
                 User user1 = User.builder()
@@ -153,6 +162,7 @@ public class UserRepositoryTest {
                                 .password("abc123")
                                 .weight(70)
                                 .score(50)
+                                .profilePicture(profilePicture1)
                                 .build();
 
                 User user2 = User.builder()
@@ -162,6 +172,7 @@ public class UserRepositoryTest {
                                 .password("abc123")
                                 .weight(65)
                                 .score(75)
+                                .profilePicture(profilePicture2)
                                 .build();
 
                 userRepository.save(user1);
