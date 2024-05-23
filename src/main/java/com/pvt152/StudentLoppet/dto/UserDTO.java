@@ -12,6 +12,11 @@ public class UserDTO {
     private int age;
     private String password;
 
+    private boolean registered;
+    private String startNumber;
+    private String clubOrCityOrCompany;
+    private String startGroup;
+
     public UserDTO() {
     }
 
@@ -101,4 +106,35 @@ public class UserDTO {
         this.password = password;
     }
 
+    public boolean isRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
+    }
+
+    public String getStartNumber() {
+        return startNumber;
+    }
+
+    public void setStartNumber(String startNumber) {
+        this.startNumber = startNumber;
+    }
+
+    public String getClubOrCityOrCompany() {
+        return clubOrCityOrCompany;
+    }
+
+    public void setClubOrCityOrCompany(String clubOrCityOrCompany) {
+        this.clubOrCityOrCompany = clubOrCityOrCompany;
+    }
+
+    public String getStartGroup() {
+        return startGroup;
+    }
+
+    public void setStartGroup(String startGroup) {
+        this.startGroup = startGroup;
+    }
 }
