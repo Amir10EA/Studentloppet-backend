@@ -2,7 +2,7 @@ package com.pvt152.StudentLoppet.model;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import java.util.Base64;
 
 @Entity
 public class ProfilePicture {
@@ -14,7 +14,6 @@ public class ProfilePicture {
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     @JsonIgnore
-
     private byte[] image;
 
     @Column(unique = true)
@@ -29,6 +28,10 @@ public class ProfilePicture {
         this.image = image;
         this.filename = filename;
         this.mimeType = mimeType;
+    }
+
+    public String getImageAsBase64() {
+        return Base64.getEncoder().encodeToString(this.image);
     }
 
     public Long getId() {

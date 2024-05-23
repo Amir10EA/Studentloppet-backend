@@ -16,7 +16,7 @@ public class UserDTO {
     }
 
     public UserDTO(String email, int score, String firstName, String lastName, University university, int age,
-            String password) {
+                   String password) {
         this.email = email;
         this.score = score;
         this.firstName = firstName;
