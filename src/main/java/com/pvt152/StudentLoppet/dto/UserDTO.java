@@ -1,7 +1,6 @@
 package com.pvt152.StudentLoppet.dto;
 
 import com.pvt152.StudentLoppet.model.University;
-
 public class UserDTO {
     private String email;
     private int score;

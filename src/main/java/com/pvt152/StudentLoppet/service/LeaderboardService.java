@@ -19,7 +19,6 @@ import com.pvt152.StudentLoppet.model.User;
 
 @Service
 public class LeaderboardService {
-
     @Autowired
     private UserRepository userRepository;
     @Autowired

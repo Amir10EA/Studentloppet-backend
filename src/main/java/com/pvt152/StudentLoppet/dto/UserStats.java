@@ -2,7 +2,6 @@ package com.pvt152.StudentLoppet.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pvt152.StudentLoppet.model.ProfilePicture;
-
 public class UserStats {
     private String fullName;
     private double value;
@@ -15,7 +14,6 @@ public class UserStats {
         this.profilePicture = profilePicture;
         this.profilePictureBase64 = profilePicture != null ? profilePicture.getImageAsBase64() : null;
     }
-
     public String getFullName() {
         return fullName;
     }

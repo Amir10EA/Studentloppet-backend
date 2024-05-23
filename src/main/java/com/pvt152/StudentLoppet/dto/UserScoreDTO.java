@@ -51,7 +51,6 @@ public class UserScoreDTO {
     public ProfilePicture getProfilePicture() {
         return profilePicture;
     }
-
     public void setProfilePicture(ProfilePicture profilePicture) {
         this.profilePicture = profilePicture;
         this.profilePictureBase64 = profilePicture != null ? profilePicture.getImageAsBase64() : null;

@@ -3,7 +3,6 @@ package com.pvt152.StudentLoppet.model;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Base64;
-
 @Entity
 public class ProfilePicture {
 
