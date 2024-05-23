@@ -9,7 +9,6 @@ public class UserStats {
     @JsonIgnore
     private ProfilePicture profilePicture;
     private String profilePictureBase64;
-
     public UserStats(String fullName, double value, ProfilePicture profilePicture) {
         this.fullName = fullName;
         this.value = value;

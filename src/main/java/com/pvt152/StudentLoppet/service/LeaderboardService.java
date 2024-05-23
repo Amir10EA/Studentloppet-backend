@@ -22,7 +22,6 @@ public class LeaderboardService {
 
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private ActivityRepository activityRepository;
 

@@ -29,7 +29,6 @@ public class ProfilePicture {
         this.filename = filename;
         this.mimeType = mimeType;
     }
-
     public String getImageAsBase64() {
         return Base64.getEncoder().encodeToString(this.image);
     }

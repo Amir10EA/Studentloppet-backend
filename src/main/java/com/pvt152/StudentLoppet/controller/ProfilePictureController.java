@@ -36,7 +36,6 @@ public class ProfilePictureController {
         if (profilePicture == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(profilePicture.getMimeType()));
         headers.setContentDisposition(ContentDisposition.inline().filename(profilePicture.getFilename()).build());

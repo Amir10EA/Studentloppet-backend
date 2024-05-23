@@ -58,7 +58,6 @@ class LeaderboardControllerTest {
     @Test
     void sortedByScore_failure() {
         when(leaderboardService.getStudentsByScore(UNIVERSITY)).thenThrow(new RuntimeException("Error"));
-
         ResponseEntity<List<UserScoreDTO>> response = leaderboardController.sortedByScore(UNIVERSITY);
 
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);

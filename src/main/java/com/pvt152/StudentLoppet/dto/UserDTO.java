@@ -11,10 +11,8 @@ public class UserDTO {
     private String universityDisplayName;
     private int age;
     private String password;
-
     public UserDTO() {
     }
-
     public UserDTO(String email, int score, String firstName, String lastName, University university, int age,
                    String password) {
         this.email = email;

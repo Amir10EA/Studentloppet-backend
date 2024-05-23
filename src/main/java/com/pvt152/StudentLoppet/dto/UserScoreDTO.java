@@ -18,7 +18,6 @@ public class UserScoreDTO {
         this.profilePicture = profilePicture;
         this.profilePictureBase64 = profilePicture != null ? profilePicture.getImageAsBase64() : null;
     }
-
     public UserScoreDTO(String userName, int score, ProfilePicture profilePicture) {
         this(userName, null, score, profilePicture); // Call the primary constructor with email as null
     }
