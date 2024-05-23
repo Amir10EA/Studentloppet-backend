@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,6 +37,7 @@ class LeaderboardControllerTest {
         profilePicture.setId(1L);
         profilePicture.setFilename("a.jpg");
         profilePicture.setMimeType("image/jpeg");
+        profilePicture.setImage(new byte[]{});  // Ensure image is not null
         return profilePicture;
     }
 
@@ -56,7 +58,6 @@ class LeaderboardControllerTest {
     @Test
     void sortedByScore_failure() {
         when(leaderboardService.getStudentsByScore(UNIVERSITY)).thenThrow(new RuntimeException("Error"));
-
         ResponseEntity<List<UserScoreDTO>> response = leaderboardController.sortedByScore(UNIVERSITY);
 
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
@@ -106,7 +107,7 @@ class LeaderboardControllerTest {
     }
 
     @Test
-    void getUserLeaderboard() {
+    void getUserLeaderboard_success() {
         ProfilePicture profilePicture = createMockProfilePicture();
         List<UserScoreDTO> expectedScores = Arrays.asList(
                 new UserScoreDTO("Student1", "student1@example.com", 100, profilePicture)

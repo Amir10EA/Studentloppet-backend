@@ -19,10 +19,8 @@ import com.pvt152.StudentLoppet.model.User;
 
 @Service
 public class LeaderboardService {
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private ActivityRepository activityRepository;
 
@@ -93,7 +91,7 @@ public class LeaderboardService {
                         (String) result[1], // userName as concatenated fullName
                         (String) result[0], // email
                         ((Number) result[2]).intValue(),
-                        (ProfilePicture) result[3])) // score
+                        (ProfilePicture) result[3])) // profilePicture
                 .collect(Collectors.toList());
     }
 

@@ -13,10 +13,8 @@ import java.util.UUID;
 
 @Service
 public class ProfilePictureService {
-
     @Autowired
     private ProfilePictureRepository profilePictureRepository;
-
     @Autowired
     private UserRepository userRepository;
 
