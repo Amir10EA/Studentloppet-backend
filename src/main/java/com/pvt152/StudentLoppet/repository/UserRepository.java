@@ -44,7 +44,9 @@ public interface UserRepository extends CrudRepository<User, String> {
 
     User findByEmail(String email);
 
+    @Query("SELECT u FROM User u WHERE CONCAT(u.firstName, ' ', u.lastName) = :fullName AND u.yearOfBirth = :yearOfBirth")
+    User findByFullNameAndYearOfBirth(@Param("fullName") String fullName, @Param("yearOfBirth") int yearOfBirth);
 
-
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM User u WHERE CONCAT(u.firstName, ' ', u.lastName) = :fullName AND u.yearOfBirth = :yearOfBirth")
+    boolean existsByFullNameAndYearOfBirth(@Param("fullName") String fullName, @Param("yearOfBirth") int yearOfBirth);
 }
-

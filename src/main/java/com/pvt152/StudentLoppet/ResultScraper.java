@@ -9,6 +9,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.pvt152.StudentLoppet.model.RunnerResult;
 import com.pvt152.StudentLoppet.repository.MidnattsloppResultRepository;
+import com.pvt152.StudentLoppet.service.ActivityService;
+import com.pvt152.StudentLoppet.service.UserService;
+import com.pvt152.StudentLoppet.repository.UserRepository;
+import com.pvt152.StudentLoppet.model.User;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -23,18 +27,27 @@ public class ResultScraper {
     @Autowired
     private MidnattsloppResultRepository resultRepository;
 
-    // scheduled run 18:26 on May 22 2024
-    @Scheduled(cron = "0 27 18 22 5 ?", zone = "Europe/Stockholm")
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ActivityService activityService;
+
+    // scheduled run : 00:00 - August 25 / 2024
+    @Scheduled(cron = "0 0 0 25 8 ?", zone = "Europe/Stockholm")
     public void scrapeAllClasses() {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Stockholm"));
-        if (now.toLocalDate().equals(LocalDate.of(2024, 5, 22))) {
+        if (now.toLocalDate().equals(LocalDate.of(2024, 8, 25))) {
             List<String> classIds = fetchClassIdsFor2023();
             for (String classId : classIds) {
                 scrapeClass(classId);
             }
             System.out.println("Scraping all classes completed.");
         } else {
-            System.out.println("Today is not May 22, 2024. Skipping the scraping task.");
+            System.out.println("Today is not May 23, 2024. Skipping the scraping task.");
         }
     }
 
@@ -91,6 +104,8 @@ public class ResultScraper {
         String raceClass = extractRaceClass(doc);
         System.out.println("Extracted race class: " + raceClass);
 
+        double distance = extractDistanceFromRaceClass(raceClass);
+
         Elements rows = doc.select("div.row.border-bottom");
         System.out.println("Number of rows found: " + rows.size());
 
@@ -108,6 +123,8 @@ public class ResultScraper {
                 String organization = row.select("div.col-9.col-sm-4").text();
                 String time = extractTime(row);
 
+                int duration = convertTimeToMinutes(time);
+
                 String yearOfBirthStr = row.select("div.col-12.col-sm-6").text();
                 int yearOfBirth = extractYearOfBirth(yearOfBirthStr, name);
 
@@ -119,6 +136,7 @@ public class ResultScraper {
                 if (!resultRepository.existsById(id)) {
                     resultRepository.save(runner);
                     System.out.println("Saved runner: " + name);
+                    checkAndIncreaseUserScore(runner, distance, duration); // Updated to pass distance and duration
                 } else {
                     System.out.println("Runner already exists: " + name);
                 }
@@ -130,6 +148,15 @@ public class ResultScraper {
         return true;
     }
 
+    private void checkAndIncreaseUserScore(RunnerResult runner, double distance, int duration) {
+        if (userRepository.existsByFullNameAndYearOfBirth(runner.getName(), runner.getYearOfBirth())) {
+            User user = userRepository.findByFullNameAndYearOfBirth(runner.getName(), runner.getYearOfBirth());
+            int score = activityService.calculateScore(distance, duration) * 10;
+            userService.increaseScore(user.getEmail(), score);
+            System.out.println("Increased score for user: " + user.getEmail() + " by " + score);
+        }
+    }
+
     private String extractRaceClass(Document doc) {
         Element raceClassElement = doc.selectFirst("div.col-12:contains(Midnattsloppet Stockholm 2023)");
         if (raceClassElement != null) {
@@ -137,6 +164,15 @@ public class ResultScraper {
             return raceClassText;
         }
         return "Unknown";
+    }
+
+    private double extractDistanceFromRaceClass(String raceClass) {
+        if (raceClass.contains("10 km")) {
+            return 10.0;
+        } else if (raceClass.contains("5 km")) {
+            return 5.0;
+        }
+        return 0.0;
     }
 
     private String extractTime(Element row) {
@@ -150,6 +186,14 @@ public class ResultScraper {
             }
         }
         return "";
+    }
+
+    private int convertTimeToMinutes(String time) {
+        String[] parts = time.split(":");
+        int hours = Integer.parseInt(parts[0]);
+        int minutes = Integer.parseInt(parts[1]);
+        int seconds = Integer.parseInt(parts[2]);
+        return hours * 60 + minutes + seconds / 60;
     }
 
     private int extractYearOfBirth(String text, String name) {

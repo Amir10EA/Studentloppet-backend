@@ -52,7 +52,7 @@ public class ActivityService {
         return activity;
     }
 
-    private int calculateScore(double distance, double duration) {
+    public int calculateScore(double distance, double duration) {
         if (duration == 0)
             return 0;
         double durationInHours = duration / 60.0;
