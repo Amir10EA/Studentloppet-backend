@@ -36,7 +36,7 @@ public interface UserRepository extends CrudRepository<User, String> {
     @Query("SELECT u FROM User u WHERE u.university = :university")
     List<User> findByUniversity(@Param("university") University university);
 
-    @Query("SELECT u.email, CONCAT(u.firstName, ' ', u.lastName), u.score FROM User u ORDER BY u.score DESC")
+    @Query("SELECT u.email, CONCAT(u.firstName, ' ', u.lastName), u.score, u.profilePicture FROM User u ORDER BY u.score DESC")
     List<Object[]> findScoresByUser();
 
     @Query("SELECT u.email, u.score FROM User u WHERE u.university = :university ORDER BY u.score DESC")

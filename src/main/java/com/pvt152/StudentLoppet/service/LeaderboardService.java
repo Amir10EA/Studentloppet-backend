@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.pvt152.StudentLoppet.model.ProfilePicture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class LeaderboardService {
         List<User> users = userRepository.findByUniversity(university);
         return users.stream()
                 .map(user -> new UserScoreDTO(user.getFirstName() + " " + user.getLastName(), user.getEmail(),
-                        user.getScore()))
+                        user.getScore(), user.getProfilePicture()))
                 .sorted(Comparator.comparingInt(UserScoreDTO::getScore).reversed())
                 .collect(Collectors.toList());
     }
@@ -40,7 +41,8 @@ public class LeaderboardService {
                 .collect(Collectors.groupingBy(Activity::getUser,
                         Collectors.summingDouble(Activity::getDistance)))
                 .entrySet().stream()
-                .map(e -> new UserStats(e.getKey().getFirstName() + " " + e.getKey().getLastName(), e.getValue()))
+                .map(e -> new UserStats(e.getKey().getFirstName() + " " + e.getKey().getLastName(), e.getValue(),
+                        e.getKey().getProfilePicture()))
                 .sorted(Comparator.comparingDouble(UserStats::getValue).reversed())
                 .collect(Collectors.toList());
     }
@@ -67,7 +69,8 @@ public class LeaderboardService {
 
         // Convert map to sorted list of UserStats
         return userSpeeds.entrySet().stream()
-                .map(e -> new UserStats(e.getKey().getFirstName() + " " + e.getKey().getLastName(), e.getValue()))
+                .map(e -> new UserStats(e.getKey().getFirstName() + " " + e.getKey().getLastName(), e.getValue(),
+                        e.getKey().getProfilePicture()))
                 .sorted(Comparator.comparingDouble(UserStats::getValue))
                 .collect(Collectors.toList());
     }
@@ -78,7 +81,8 @@ public class LeaderboardService {
                 .collect(
                         Collectors.groupingBy(Activity::getUser, Collectors.summingDouble(Activity::getCaloriesBurned)))
                 .entrySet().stream()
-                .map(e -> new UserStats(e.getKey().getFirstName() + " " + e.getKey().getLastName(), e.getValue()))
+                .map(e -> new UserStats(e.getKey().getFirstName() + " " + e.getKey().getLastName(), e.getValue(),
+                        e.getKey().getProfilePicture()))
                 .sorted(Comparator.comparingDouble(UserStats::getValue).reversed())
                 .collect(Collectors.toList());
     }
@@ -88,7 +92,8 @@ public class LeaderboardService {
                 .map(result -> new UserScoreDTO(
                         (String) result[1], // userName as concatenated fullName
                         (String) result[0], // email
-                        ((Number) result[2]).intValue())) // score
+                        ((Number) result[2]).intValue(),
+                        (ProfilePicture) result[3])) // score
                 .collect(Collectors.toList());
     }
 
