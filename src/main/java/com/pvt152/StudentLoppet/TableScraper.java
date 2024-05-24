@@ -31,6 +31,7 @@ public class TableScraper {
     private MidnattsloppRunnerRepository runnerRepository;
 
     @Scheduled(cron = "0 0 2 * * ?")
+    // @Scheduled(cron = "0 6 14 24 5 ?", zone = "Europe/Stockholm")
     public void scrapeAndExtractRunners() {
         String chromeDriverPath = System.getenv("CHROMEDRIVER_PATH");
         System.setProperty("webdriver.chrome.driver", chromeDriverPath);
