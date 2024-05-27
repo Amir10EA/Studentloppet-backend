@@ -70,7 +70,7 @@ public class UserService {
     }
 
     private boolean isValidName(String name) {
-        return name.matches("^[A-Za-z ]+$");
+        return name.matches("^[A-Za-zÀ-ÖØ-öø-ÿ ]+$");
     }
 
     public Optional<UserDTO> login(String email, String password) {
@@ -145,27 +145,25 @@ public class UserService {
 
     public int getUserRank(String userEmail) {
         List<Object[]> scores = userRepository.findScoresByUser();
-        Integer lastScore = null; // This will store the last user's score for comparison
-        int rank = 1; // This will maintain the current rank
+        Integer lastScore = null;
+        int rank = 1;
 
         for (Object[] score : scores) {
             String email = (String) score[0];
             int userScore = ((Number) score[2]).intValue();
 
-            // If score changes and it's not the first entry, increment rank
             if (lastScore != null && userScore != lastScore) {
                 rank++;
             }
 
-            // Check if the current email matches the requested user's email
             if (email.equals(userEmail)) {
-                return rank; // Return the current rank if the email matches
+                return rank;
             }
 
-            lastScore = userScore; // Update the lastScore to the current user's score
+            lastScore = userScore;
         }
 
-        return -1; // Return -1 if the user is not found
+        return -1;
     }
 
     public int getUserDistanceRankWithinUniversity(String userEmail) {
@@ -174,42 +172,34 @@ public class UserService {
             throw new RuntimeException("User does not belong to any university");
         }
 
-        // Fetch distances for all users in the same university
         List<Object[]> distances = activityRepository.findTotalDistanceByUniversity(user.getUniversity());
         if (distances.isEmpty()) {
-            return 1; // If no distances are found, assume the university has no activities and assign
-            // rank 1.
+            return 1;
         }
 
-        // Sort the list based on distance in descending order
         distances.sort((a, b) -> Double.compare((Double) b[1], (Double) a[1]));
 
-        Integer lastDistance = null; // This will store the last user's distance for comparison
-        int rank = 1; // This will maintain the current rank
-        int lastAssignedRank = 1; // To keep track of the last assigned rank
+        Integer lastDistance = null;
+        int rank = 1;
+        int lastAssignedRank = 1;
 
         for (Object[] distance : distances) {
             String email = (String) distance[0];
             int currentDistance = ((Number) distance[1]).intValue();
 
-            // If distance changes and it's not the first entry, increment rank
             if (lastDistance != null && currentDistance != lastDistance) {
                 rank++;
             }
 
-            // Update the rank as the last assigned rank
             lastAssignedRank = rank;
 
-            // Check if the current email matches the requested user's email
             if (email.equals(userEmail)) {
-                return rank; // Return the current rank if the email matches
+                return rank;
             }
 
-            lastDistance = currentDistance; // Update the lastDistance to the current user's distance
+            lastDistance = currentDistance;
         }
 
-        // If the user wasn't found in the list, it means they have no activities.
-        // They should get a rank one below the last ranked user.
         return lastAssignedRank + 1;
     }
 
@@ -234,13 +224,10 @@ public class UserService {
             emailToSpeedMap.put(email, speed);
         }
 
-        // Sort speeds to rank them
         Collections.sort(speeds, Collections.reverseOrder());
 
-        // Find rank of the specific user
         double userSpeed = emailToSpeedMap.getOrDefault(userEmail, -1.0);
         if (userSpeed == -1) {
-            // If the user does not have any activities, assign them the last rank
             int lastRank = speeds.size() + 1;
             return lastRank;
         }
@@ -258,12 +245,12 @@ public class UserService {
                 return rank;
             }
         }
-        return -1; // In case there is no matching speed, though this should not occur
+        return -1;
     }
 
     private int calculateRank(String userEmail, List<Object[]> results) {
         if (results.isEmpty()) {
-            return 1; // Default rank if no results.
+            return 1;
         }
 
         results.sort((a, b) -> Double.compare(((Number) b[1]).doubleValue(), ((Number) a[1]).doubleValue()));
@@ -272,45 +259,42 @@ public class UserService {
         Integer lastValue = null;
         int lastRank = 1;
         boolean foundUser = false;
-        int lastPositiveValueRank = 0; // Tracks the last rank for positive values.
-        int lastSeenValue = 0; // Tracks the last seen value to handle users with no activities correctly at
-        // the end.
+        int lastPositiveValueRank = 0;
+        int lastSeenValue = 0;
 
         for (int i = 0; i < results.size(); i++) {
             String email = (String) results.get(i)[0];
             int currentValue = ((Number) results.get(i)[1]).intValue();
-            lastSeenValue = currentValue; // Update lastSeenValue with the current value
+            lastSeenValue = currentValue;
 
             if (lastValue != null && currentValue < lastValue) {
                 if (currentValue > 0) {
-                    rank = i + 1; // Update rank if value is less and positive
+                    rank = i + 1;
                 } else {
-                    rank = lastPositiveValueRank + 1; // Assign next rank to zero results after the last positive value
+                    rank = lastPositiveValueRank + 1;
                 }
             }
 
             if (currentValue > 0) {
-                lastPositiveValueRank = rank; // Update last positive value rank
+                lastPositiveValueRank = rank;
             }
 
             if (email.equals(userEmail)) {
                 foundUser = true;
-                return rank; // Return the rank of the matching user
+                return rank;
             }
 
             lastValue = currentValue;
             lastRank = rank;
         }
 
-        // If the user was not found in the list and they are assumed to have no
-        // activities
+
         if (!foundUser) {
             return lastSeenValue > 0 ? lastPositiveValueRank + 1 : lastPositiveValueRank; // Assign rank one below the
-            // last positive, or share
-            // rank if last is zero
+
         }
 
-        return -1; // If user is not found in the list
+        return -1;
     }
 
     public int getUserRankWithinUniversity(String userEmail) {
@@ -338,7 +322,7 @@ public class UserService {
             lastScore = userScore;
         }
 
-        return -1; // Return -1 if the user is not found
+        return -1;
     }
 
     public boolean setWeight(String email, double weight) {
