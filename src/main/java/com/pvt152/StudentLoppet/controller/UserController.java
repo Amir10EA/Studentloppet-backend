@@ -1,9 +1,7 @@
 package com.pvt152.StudentLoppet.controller;
 
 import com.pvt152.StudentLoppet.dto.UserDTO;
-import com.pvt152.StudentLoppet.model.Activity;
 import com.pvt152.StudentLoppet.model.University;
-import com.pvt152.StudentLoppet.service.ActivityService;
 import com.pvt152.StudentLoppet.service.UserService;
 
 import java.util.Collections;
@@ -14,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -104,11 +101,6 @@ public class UserController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
-
-    @GetMapping(path = "/test")
-    public @ResponseBody ResponseEntity<String> testEndpoint() {
-        return ResponseEntity.ok("Test endpoint is working");
     }
 
     @GetMapping("/userRank/{email}")

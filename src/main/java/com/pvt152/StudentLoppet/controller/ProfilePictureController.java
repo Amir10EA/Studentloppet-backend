@@ -2,13 +2,14 @@ package com.pvt152.StudentLoppet.controller;
 
 import com.pvt152.StudentLoppet.model.ProfilePicture;
 import com.pvt152.StudentLoppet.service.ProfilePictureService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-// Ändra så att bilden hämtas med user email
+
 @RestController
 @RequestMapping("/api/profile-pictures")
 public class ProfilePictureController {
@@ -16,9 +17,9 @@ public class ProfilePictureController {
     @Autowired
     private ProfilePictureService profilePictureService;
 
-
     @PostMapping("/upload")
-    public @ResponseBody String uploadProfilePicture(@RequestParam("email") String email, @RequestParam("file") MultipartFile file) {
+    public @ResponseBody String uploadProfilePicture(@RequestParam("email") String email,
+            @RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             return "File is missing";
         }
@@ -54,7 +55,8 @@ public class ProfilePictureController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<String> updateProfilePicture(@RequestParam("email") String email, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> updateProfilePicture(@RequestParam("email") String email,
+            @RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is missing");
         }

@@ -1,4 +1,4 @@
-package com.pvt152.StudentLoppet;
+package com.pvt152.StudentLoppet.service;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -37,12 +37,12 @@ public class CountdownExtractor {
                     .not(ExpectedConditions.textToBe(By.cssSelector(".countdown__unit.js-countdown-days"), "")));
 
             String countdownText = countdownElement.getText();
-            System.out.println("Days left: " + countdownText);
+            System.out.println("days left: " + countdownText);
 
             try {
                 return Integer.parseInt(countdownText);
             } catch (NumberFormatException e) {
-                System.out.println("Failed to parse countdown text to integer: " + countdownText);
+                System.out.println("Failed to convert countdown from text to integer: " + countdownText);
                 return -1;
             }
         } catch (Exception e) {

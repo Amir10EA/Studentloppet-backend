@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +36,7 @@ class LeaderboardControllerTest {
         profilePicture.setId(1L);
         profilePicture.setFilename("a.jpg");
         profilePicture.setMimeType("image/jpeg");
-        profilePicture.setImage(new byte[]{});  // Ensure image is not null
+        profilePicture.setImage(new byte[] {}); // Ensure image is not null
         return profilePicture;
     }
 
@@ -45,8 +44,7 @@ class LeaderboardControllerTest {
     void sortedByScore_success() {
         ProfilePicture profilePicture = createMockProfilePicture();
         List<UserScoreDTO> expectedScores = Arrays.asList(
-                new UserScoreDTO("Student1", "student1@example.com", 100, profilePicture)
-        );
+                new UserScoreDTO("Student1", "student1@example.com", 100, profilePicture));
         when(leaderboardService.getStudentsByScore(UNIVERSITY)).thenReturn(expectedScores);
 
         ResponseEntity<List<UserScoreDTO>> response = leaderboardController.sortedByScore(UNIVERSITY);
@@ -68,8 +66,7 @@ class LeaderboardControllerTest {
     void sortedByDistance_success() {
         ProfilePicture profilePicture = createMockProfilePicture();
         List<UserStats> expectedStats = Arrays.asList(
-                new UserStats("Student1", 100.0, profilePicture)
-        );
+                new UserStats("Student1", 100.0, profilePicture));
         when(leaderboardService.getStudentsByDistance(UNIVERSITY)).thenReturn(expectedStats);
 
         ResponseEntity<List<UserStats>> response = leaderboardController.sortedByDistance(UNIVERSITY);
@@ -82,8 +79,7 @@ class LeaderboardControllerTest {
     void sortedBySpeed_success() {
         ProfilePicture profilePicture = createMockProfilePicture();
         List<UserStats> expectedStats = Arrays.asList(
-                new UserStats("Student1", 10.0, profilePicture)
-        );
+                new UserStats("Student1", 10.0, profilePicture));
         when(leaderboardService.getStudentsBySpeed(UNIVERSITY)).thenReturn(expectedStats);
 
         ResponseEntity<List<UserStats>> response = leaderboardController.sortedBySpeed(UNIVERSITY);
@@ -96,8 +92,7 @@ class LeaderboardControllerTest {
     void sortedByCalories_success() {
         ProfilePicture profilePicture = createMockProfilePicture();
         List<UserStats> expectedStats = Arrays.asList(
-                new UserStats("Student1", 500, profilePicture)
-        );
+                new UserStats("Student1", 500, profilePicture));
         when(leaderboardService.getStudentsByCaloriesBurned(UNIVERSITY)).thenReturn(expectedStats);
 
         ResponseEntity<List<UserStats>> response = leaderboardController.sortedByCalories(UNIVERSITY);
@@ -110,8 +105,7 @@ class LeaderboardControllerTest {
     void getUserLeaderboard_success() {
         ProfilePicture profilePicture = createMockProfilePicture();
         List<UserScoreDTO> expectedScores = Arrays.asList(
-                new UserScoreDTO("Student1", "student1@example.com", 100, profilePicture)
-        );
+                new UserScoreDTO("Student1", "student1@example.com", 100, profilePicture));
         when(leaderboardService.calculateUserScores()).thenReturn(expectedScores);
 
         ResponseEntity<List<UserScoreDTO>> response = leaderboardController.getUserLeaderboard();

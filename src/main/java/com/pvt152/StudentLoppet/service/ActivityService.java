@@ -3,9 +3,6 @@ package com.pvt152.StudentLoppet.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.pvt152.StudentLoppet.dto.UniversityMetricDTO;
-import com.pvt152.StudentLoppet.dto.UserScoreDTO;
-import com.pvt152.StudentLoppet.dto.UserStats;
 import com.pvt152.StudentLoppet.model.Activity;
 import com.pvt152.StudentLoppet.model.University;
 import com.pvt152.StudentLoppet.model.User;
@@ -13,15 +10,9 @@ import com.pvt152.StudentLoppet.repository.ActivityRepository;
 import com.pvt152.StudentLoppet.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class ActivityService {
@@ -41,11 +32,10 @@ public class ActivityService {
     public Activity logActivity(String userEmail, double distance, double duration) {
         User user = userRepository.findById(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Calculate and update score based on the activity
         int score = calculateScore(distance, duration);
         userService.increaseScore(userEmail, score);
 
-        Activity activity = new Activity(distance, duration, user, score); // pass the score to the constructor
+        Activity activity = new Activity(distance, duration, user, score);
         activity.setTimestamp(LocalDateTime.now());
         activityRepository.save(activity);
 
@@ -66,7 +56,6 @@ public class ActivityService {
                 : 0;
         Map<String, Object> result = calculateTotalDistanceAndDuration(activities, userScore);
 
-        // Get the rank of the user and add it to the result
         int userRank = userService.getUserRank(userEmail);
         result.put("userRank", userRank);
 
@@ -79,11 +68,7 @@ public class ActivityService {
         int userScorePastWeek = activities.stream().mapToInt(a -> calculateScore(a.getDistance(), a.getDuration()))
                 .sum();
         Map<String, Object> result = calculateTotalDistanceAndDuration(activities, userScorePastWeek);
-
-        // Get the rank of the user based on the past week's activities and add it to
-        // the result
-        int userRankPastWeek = userService.getUserRank(userEmail); // Assuming rank is based on total score not just
-                                                                   // past week
+        int userRankPastWeek = userService.getUserRank(userEmail);
         result.put("userRank", userRankPastWeek);
 
         return result;
@@ -92,8 +77,6 @@ public class ActivityService {
     public Map<String, Object> getTotalDistanceAndDurationByUniversity(University university) {
         List<Activity> activities = activityRepository.findByUniversity(university);
         List<Object[]> universityScores = userRepository.findScoresByUniversity();
-
-        // Fetch the number of users at the university
         int numberOfStudents = userRepository.countUsersByUniversity().stream()
                 .filter(objects -> university.equals(objects[0]))
                 .map(objects -> ((Long) objects[1]).intValue())
@@ -109,10 +92,8 @@ public class ActivityService {
         }
 
         Map<String, Object> summary = calculateTotalDistanceAndDuration(activities, universityScore);
-        summary.put("universityName", university.getDisplayName()); // Add the university display name to the summary
-        summary.put("numberOfStudents", numberOfStudents); // Add number of students to the summary
-
-        // Get the rank of the university and add it to the summary
+        summary.put("universityName", university.getDisplayName());
+        summary.put("numberOfStudents", numberOfStudents);
         int universityRank = universityService.getUniversityRank(university);
         summary.put("universityRank", universityRank);
 
@@ -120,15 +101,14 @@ public class ActivityService {
     }
 
     private Map<String, Object> calculateTotalDistanceAndDuration(List<Activity> activities, int totalScore) {
-        double totalDistance = activities.stream().mapToDouble(Activity::getDistance).sum(); // Total distance run in km
-        double totalDuration = activities.stream().mapToDouble(Activity::getDuration).sum(); // Total time run in min
+        double totalDistance = activities.stream().mapToDouble(Activity::getDistance).sum();
+        double totalDuration = activities.stream().mapToDouble(Activity::getDuration).sum();
 
         double minPerKm = 0;
         if (totalDistance > 0) {
-            minPerKm = totalDuration / totalDistance; // Minutes per kilometer
+            minPerKm = totalDuration / totalDistance;
         }
 
-        // Sum up the calories burned for all activities
         double caloriesBurned = activities.stream().mapToDouble(Activity::getCaloriesBurned).sum();
 
         Map<String, Object> result = new HashMap<>();

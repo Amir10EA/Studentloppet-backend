@@ -7,9 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
-import com.pvt152.StudentLoppet.CountdownExtractor;
 import com.pvt152.StudentLoppet.dto.RunnerInfoDTO;
-
+import com.pvt152.StudentLoppet.service.CountdownExtractor;
 import com.pvt152.StudentLoppet.service.WebScrapingService;
 
 @RestController

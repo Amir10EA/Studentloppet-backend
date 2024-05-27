@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -50,7 +48,6 @@ public class ForgotPasswordController {
         return ResponseEntity.ok("POST request received successfully!");
     }
 
-    // check if email exists, if it does, generate OTP and send it to the email.
     @PostMapping("/verifyEmail/{email}")
     public ResponseEntity<String> verifyEmail(@PathVariable String email) {
         try {
@@ -70,7 +67,7 @@ public class ForgotPasswordController {
 
             ForgotPassword fPassword = ForgotPassword.builder()
                     .otp(otp)
-                    .expirationDate(new Date(System.currentTimeMillis() + 5 * 60 * 1000)) // Sets OTP expiration time
+                    .expirationDate(new Date(System.currentTimeMillis() + 5 * 60 * 1000))
                     .user(u)
                     .build();
 
@@ -100,8 +97,6 @@ public class ForgotPasswordController {
 
             return ResponseEntity.ok("Token verified!");
         } catch (ResponseStatusException e) {
-            // Instead of trying to extract status code from the exception, directly return
-            // the ResponseEntity with the message and status.
             return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
         }
     }

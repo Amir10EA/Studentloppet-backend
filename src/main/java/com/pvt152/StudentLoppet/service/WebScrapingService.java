@@ -27,20 +27,20 @@ public class WebScrapingService {
             String fullName = user.getLastName().trim() + " " + user.getFirstName().trim();
             int yearOfBirth = user.getYearOfBirth();
 
-            System.out.println("Searching for runner with Name: '" + fullName + "', Year of Birth: " + yearOfBirth);
+            System.out.println("Searching, Name: '" + fullName + "', Birth year: " + yearOfBirth);
 
             Optional<MidnattsloppRunner> runnerOptional = runnerRepository.findByNameAndYearBorn(fullName, yearOfBirth);
 
             if (runnerOptional.isPresent()) {
                 MidnattsloppRunner runner = runnerOptional.get();
-                System.out.println("Match found: " + runner);
+                System.out.println("user match found: " + runner);
                 return new RunnerInfoDTO(true, runner.getStartNumber(), runner.getClubOrCityOrCompany(),
                         runner.getStartGroup());
             } else {
-                System.out.println("No runner found with Name: '" + fullName + "', Year of Birth: " + yearOfBirth);
+                System.out.println("no runner was found with name: '" + fullName + "', and birth year: " + yearOfBirth);
             }
         } else {
-            System.out.println("User not found with email: " + email);
+            System.out.println("email not found: " + email);
         }
         return new RunnerInfoDTO(false, null, null, null);
     }

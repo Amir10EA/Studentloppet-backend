@@ -21,15 +21,13 @@ public class ProfilePictureService {
     public User saveProfilePicture(String email, MultipartFile file) throws IOException {
         User user = userRepository.findById(email).orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Generate a unique filename
         String originalFilename = file.getOriginalFilename();
         String uniqueFilename = UUID.randomUUID().toString() + "_" + originalFilename;
 
         ProfilePicture profilePicture = new ProfilePicture(
                 file.getBytes(),
                 uniqueFilename,
-                file.getContentType()
-        );
+                file.getContentType());
 
         profilePicture = profilePictureRepository.save(profilePicture);
 
@@ -44,6 +42,7 @@ public class ProfilePictureService {
         }
         return null;
     }
+
     public void removeProfilePicture(String email) {
         User user = userRepository.findById(email).orElseThrow(() -> new RuntimeException("User not found"));
         ProfilePicture profilePicture = user.getProfilePicture();

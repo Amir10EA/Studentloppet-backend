@@ -12,7 +12,6 @@ public class MidnattsloppRunner {
     private String clubOrCityOrCompany;
     private String startGroup;
 
-    // Constructors
     public MidnattsloppRunner(String startNumber, String name, int yearBorn, String clubOrCityOrCompany,
             String startGroup) {
         this.startNumber = startNumber;
@@ -25,7 +24,6 @@ public class MidnattsloppRunner {
     public MidnattsloppRunner() {
     }
 
-    // Getters and setters
     public String getStartNumber() {
         return startNumber;
     }
@@ -66,7 +64,6 @@ public class MidnattsloppRunner {
         this.startGroup = startGroup;
     }
 
-    // Equals and HashCode
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -82,7 +79,6 @@ public class MidnattsloppRunner {
         return startNumber != null ? startNumber.hashCode() : 0;
     }
 
-    // ToString method
     @Override
     public String toString() {
         return "MidnattsloppRunner{" +

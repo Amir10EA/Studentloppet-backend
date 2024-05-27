@@ -31,7 +31,7 @@ public class User {
 
     @Builder
     public User(String email, int score, String firstName, String lastName, String password, double weight,
-                University university, ProfilePicture profilePicture, int yearOfBirth) {
+            University university, ProfilePicture profilePicture, int yearOfBirth) {
         this.email = email;
         this.score = score;
         this.firstName = firstName;
@@ -43,7 +43,6 @@ public class User {
         this.yearOfBirth = yearOfBirth;
     }
 
-    // Getters and Setters
     public String getEmail() {
         return email;
     }
