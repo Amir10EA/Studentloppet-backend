@@ -16,6 +16,12 @@ public class CountdownExtractor {
 
     public int extractCountdownDays() {
         String chromeDriverPath = System.getenv("CHROMEDRIVER_PATH");
+
+        if (chromeDriverPath == null || chromeDriverPath.isEmpty()) {
+            System.err.println("CHROMEDRIVER_PATH environment variable is not set.");
+            return -1;
+        }
+
         System.setProperty("webdriver.chrome.driver", chromeDriverPath);
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-gpu", "--window-size=1920,1200", "--headless");
@@ -25,15 +31,13 @@ public class CountdownExtractor {
             driver.get("https://midnattsloppet.com/");
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
-            // Wait for the countdown element to be visible and contain text
             WebElement countdownElement = wait.until(ExpectedConditions
                     .visibilityOfElementLocated(By.cssSelector(".countdown__unit.js-countdown-days")));
             wait.until(ExpectedConditions
                     .not(ExpectedConditions.textToBe(By.cssSelector(".countdown__unit.js-countdown-days"), "")));
 
-            // Extract the text from the countdown element
             String countdownText = countdownElement.getText();
-            System.out.println("Countdown Text: " + countdownText);
+            System.out.println("Days left: " + countdownText);
 
             try {
                 return Integer.parseInt(countdownText);
@@ -43,7 +47,7 @@ public class CountdownExtractor {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return -1; // Indicate an error
+            return -1;
         } finally {
             driver.quit();
         }

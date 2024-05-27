@@ -1,6 +1,7 @@
 package com.pvt152.StudentLoppet.dto;
 
 import com.pvt152.StudentLoppet.model.University;
+
 public class UserDTO {
     private String email;
     private int score;
@@ -10,10 +11,17 @@ public class UserDTO {
     private String universityDisplayName;
     private int age;
     private String password;
+
+    private boolean registered;
+    private String startNumber;
+    private String clubOrCityOrCompany;
+    private String startGroup;
+
     public UserDTO() {
     }
+
     public UserDTO(String email, int score, String firstName, String lastName, University university, int age,
-                   String password) {
+            String password) {
         this.email = email;
         this.score = score;
         this.firstName = firstName;
@@ -98,4 +106,35 @@ public class UserDTO {
         this.password = password;
     }
 
+    public boolean isRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
+    }
+
+    public String getStartNumber() {
+        return startNumber;
+    }
+
+    public void setStartNumber(String startNumber) {
+        this.startNumber = startNumber;
+    }
+
+    public String getClubOrCityOrCompany() {
+        return clubOrCityOrCompany;
+    }
+
+    public void setClubOrCityOrCompany(String clubOrCityOrCompany) {
+        this.clubOrCityOrCompany = clubOrCityOrCompany;
+    }
+
+    public String getStartGroup() {
+        return startGroup;
+    }
+
+    public void setStartGroup(String startGroup) {
+        this.startGroup = startGroup;
+    }
 }

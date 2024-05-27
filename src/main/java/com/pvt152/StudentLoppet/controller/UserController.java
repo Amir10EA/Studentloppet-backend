@@ -55,18 +55,6 @@ public class UserController {
         return "Year of birth set successfully";
     }
 
-    // @GetMapping(path = "/add/{email}/{password}")
-    // public @ResponseBody String register(@PathVariable String password,
-    // @PathVariable String email) {
-    // if (userService.emailOccupied(email)) {
-    // return new IllegalArgumentException("Email already exists").toString();
-    // }
-    // if (!userService.validateEmail(email)) {
-    // return new IllegalArgumentException("Invalid email address").toString();
-    // }
-    // userService.registerUser(email, password, null);
-    // return "saved";
-    // }
     @PostMapping(path = "/set/{email}/{first}/{last}")
     public @ResponseBody ResponseEntity<?> setName(@PathVariable String email, @PathVariable String first,
             @PathVariable String last) {
@@ -127,7 +115,7 @@ public class UserController {
     public ResponseEntity<?> getUserRank(@PathVariable String email) {
         try {
             Map<String, Object> ranks = new HashMap<>();
-            int scoreRank = userService.getUserRankWithinUniversity(email); // Changed to the new method
+            int scoreRank = userService.getUserRankWithinUniversity(email);
             int distanceRank = userService.getUserDistanceRankWithinUniversity(email);
             int caloriesRank = userService.getUserCaloriesRankWithinUniversity(email);
             int speedRank = userService.getUserSpeedRankWithinUniversity(email);

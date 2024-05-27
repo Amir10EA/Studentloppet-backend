@@ -30,7 +30,8 @@ public class TableScraper {
     @Autowired
     private MidnattsloppRunnerRepository runnerRepository;
 
-    @Scheduled(cron = "0 0 2 * * ?") // Every day at 2 AM
+    @Scheduled(cron = "0 0 2 * * ?")
+    // @Scheduled(cron = "0 6 14 24 5 ?", zone = "Europe/Stockholm")
     public void scrapeAndExtractRunners() {
         String chromeDriverPath = System.getenv("CHROMEDRIVER_PATH");
         System.setProperty("webdriver.chrome.driver", chromeDriverPath);
@@ -45,8 +46,6 @@ public class TableScraper {
             handleConsent(wait);
             initiateSearch(wait);
 
-            // List of categories to scrape, placing the first category last for testing
-            // purposes
             String[] categories = { "3156", "3157", "3158", "3155" };
 
             for (String category : categories) {
@@ -65,21 +64,12 @@ public class TableScraper {
 
     private void scrapeAllPages(WebDriver driver, WebDriverWait wait) {
         try {
-            // Find the last page number
             int lastPage = findLastPageNumber(driver, wait);
-
-            // Scrape the first page
             extractRunners(driver.getPageSource());
-
-            // Navigate through pages 2 to 10
             for (int i = 2; i <= 10; i++) {
                 navigateToNextPage(driver, wait, i);
             }
-
-            // Handling the first three-dot button to reach the 11th page
             clickThreeDotsAndScrape(driver, wait, "//a[contains(text(), '...')]");
-
-            // Generalized loop to handle all subsequent pages and three-dot navigation
             for (int currentPage = 11; currentPage <= lastPage; currentPage++) {
                 if (currentPage % 10 == 1 && currentPage != 11) {
                     clickThreeDotsAndScrape(driver, wait, "//a[contains(text(), '...')][2]");
@@ -95,20 +85,18 @@ public class TableScraper {
     private int findLastPageNumber(WebDriver driver, WebDriverWait wait) {
         try {
             System.out.println("Navigating to the last page...");
-            // Navigate to the last page
+
             WebElement lastPageButton = wait
                     .until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(), '>>')]")));
             lastPageButton.click();
             wait.until((WebDriver d) -> ((JavascriptExecutor) d).executeScript("return document.readyState")
                     .equals("complete"));
 
-            // Extract the last page number
             WebElement paginationElement = driver.findElement(By.id("ctl00_ContentPlaceHolder1_DataPager1"));
             List<WebElement> pageLinks = paginationElement
                     .findElements(By.xpath("//a[contains(@class, 'pagerDB-next active')]"));
-            int lastPageNumber = Integer.parseInt(pageLinks.get(pageLinks.size() - 1).getText());
 
-            // Navigate back to the first page
+            int lastPageNumber = Integer.parseInt(pageLinks.get(pageLinks.size() - 1).getText());
             System.out.println("Navigating back to the first page...");
             WebElement firstPageButton = wait
                     .until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(), '<<')]")));
@@ -121,7 +109,7 @@ public class TableScraper {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Failed to determine the last page number.");
-            return -1; // Indicate an error
+            return -1;
         }
     }
 
