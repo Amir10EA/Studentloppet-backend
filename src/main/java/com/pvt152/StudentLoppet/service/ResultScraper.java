@@ -1,4 +1,4 @@
-package com.pvt152.StudentLoppet;
+package com.pvt152.StudentLoppet.service;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,8 +9,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.pvt152.StudentLoppet.model.RunnerResult;
 import com.pvt152.StudentLoppet.repository.MidnattsloppResultRepository;
-import com.pvt152.StudentLoppet.service.ActivityService;
-import com.pvt152.StudentLoppet.service.UserService;
 import com.pvt152.StudentLoppet.repository.UserRepository;
 import com.pvt152.StudentLoppet.model.User;
 
@@ -41,17 +39,17 @@ public class ResultScraper {
     public void scrapeAllClasses() {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Stockholm"));
         if (now.toLocalDate().equals(LocalDate.of(2024, 8, 25))) {
-            List<String> classIds = fetchClassIdsFor2023();
+            List<String> classIds = fetchClassIdsFor2024();
             for (String classId : classIds) {
                 scrapeClass(classId);
             }
-            System.out.println("Scraping all classes completed.");
+            System.out.println("Scraping classes completed");
         } else {
-            System.out.println("Today is not May 23, 2024. Skipping the scraping task.");
+            System.out.println("Today is not May 23 2024 - cannot scrape yet! ");
         }
     }
 
-    public List<String> fetchClassIdsFor2023() {
+    public List<String> fetchClassIdsFor2024() {
         List<String> classIds = new ArrayList<>();
         String url = "https://history.midnattsloppet.com/?EventGroupId=96&Year=2023";
 
@@ -69,7 +67,7 @@ public class ResultScraper {
             e.printStackTrace();
         }
 
-        System.out.println("Fetched ClassIds for 2023: " + classIds);
+        System.out.println("fetched ClassIds for 2024: " + classIds);
         return classIds;
     }
 
@@ -128,20 +126,20 @@ public class ResultScraper {
                 String yearOfBirthStr = row.select("div.col-12.col-sm-6").text();
                 int yearOfBirth = extractYearOfBirth(yearOfBirthStr, name);
 
-                System.out.println("Extracted runner - ID: " + id + ", Name: " + name + ", Organization: "
-                        + organization + ", Time: " + time + ", Year of Birth: " + yearOfBirth + ", Place: " + place);
+                System.out.println("Extracted runner - ID: " + id + ", name: " + name + ", organization/city: "
+                        + organization + ", time: " + time + ", birth year: " + yearOfBirth + ", place: " + place);
 
                 RunnerResult runner = new RunnerResult(id, name, organization, time, raceClass, yearOfBirth, place);
 
                 if (!resultRepository.existsById(id)) {
                     resultRepository.save(runner);
-                    System.out.println("Saved runner: " + name);
-                    checkAndIncreaseUserScore(runner, distance, duration); // Updated to pass distance and duration
+                    System.out.println("Saved runner " + name);
+                    checkAndIncreaseUserScore(runner, distance, duration);
                 } else {
                     System.out.println("Runner already exists: " + name);
                 }
             } catch (Exception e) {
-                System.out.println("Error processing row: " + row.text());
+                System.out.println("Error extracting row: " + row.text());
                 e.printStackTrace();
             }
         }
@@ -153,7 +151,7 @@ public class ResultScraper {
             User user = userRepository.findByFullNameAndYearOfBirth(runner.getName(), runner.getYearOfBirth());
             int score = activityService.calculateScore(distance, duration) * 10;
             userService.increaseScore(user.getEmail(), score);
-            System.out.println("Increased score for user: " + user.getEmail() + " by " + score);
+            System.out.println("users: " + user.getEmail() + " score increased by " + score);
         }
     }
 

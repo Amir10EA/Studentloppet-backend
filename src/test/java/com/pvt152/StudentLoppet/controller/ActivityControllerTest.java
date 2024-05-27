@@ -22,48 +22,52 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ActivityController.class)
 public class ActivityControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @MockBean
-    private ActivityService activityService;
+        @MockBean
+        private ActivityService activityService;
 
-    @Test
-    void testLogActivityWithValidParameters() throws Exception {
+        @Test
+        void testLogActivityWithValidParameters() throws Exception {
 
-        double durationInMinutes = 30.0;
-        long durationInSeconds = (long) (durationInMinutes * 60);
+                double durationInMinutes = 30.0;
+                long durationInSeconds = (long) (durationInMinutes * 60);
 
-        Activity activity = new Activity(5.0, durationInMinutes, null, 10);
-        given(activityService.logActivity(any(String.class), any(Double.class), any(Double.class)))
-                .willReturn(activity);
+                Activity activity = new Activity(5.0, durationInMinutes, null, 10);
+                given(activityService.logActivity(any(String.class), any(Double.class), any(Double.class)))
+                                .willReturn(activity);
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/activities/addActivity/{email}/{distance}/{duration}", "user@example.com", 5.0,
-                        durationInSeconds)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-                //.andExpect(MockMvcResultMatchers.jsonPath("$.scoreGained").value(10));
-    }
+                mockMvc.perform(MockMvcRequestBuilders
+                                .post("/api/activities/addActivity/{email}/{distance}/{duration}", "user@example.com",
+                                                5.0,
+                                                durationInSeconds)
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk());
+        }
 
-    @Test
-    void testLogActivityWithInvalidDistance() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/activities/addActivity/{email}/{distance}/{duration}", "user@example.com", -5, 30)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(
-                        MockMvcResultMatchers.content().string(containsString("Error: Invalid distance or duration")));
+        @Test
+        void testLogActivityWithInvalidDistance() throws Exception {
+                mockMvc.perform(MockMvcRequestBuilders
+                                .post("/api/activities/addActivity/{email}/{distance}/{duration}", "user@example.com",
+                                                -5, 30)
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isBadRequest())
+                                .andExpect(
+                                                MockMvcResultMatchers.content().string(
+                                                                containsString("Error: Invalid distance or duration")));
 
-    }
+        }
 
-    @Test
-    void testLogActivityWithNegativeDuration() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/activities/addActivity/{email}/{distance}/{duration}", "user@example.com", 5.0, -1)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string("Error: Invalid distance or duration"));
-    }
+        @Test
+        void testLogActivityWithNegativeDuration() throws Exception {
+                mockMvc.perform(MockMvcRequestBuilders
+                                .post("/api/activities/addActivity/{email}/{distance}/{duration}", "user@example.com",
+                                                5.0, -1)
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isBadRequest())
+                                .andExpect(MockMvcResultMatchers.content()
+                                                .string("Error: Invalid distance or duration"));
+        }
 
 }

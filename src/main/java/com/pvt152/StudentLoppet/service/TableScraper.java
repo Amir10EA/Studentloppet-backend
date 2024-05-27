@@ -1,4 +1,4 @@
-package com.pvt152.StudentLoppet;
+package com.pvt152.StudentLoppet.service;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.jsoup.Jsoup;
@@ -13,8 +13,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +29,6 @@ public class TableScraper {
     private MidnattsloppRunnerRepository runnerRepository;
 
     @Scheduled(cron = "0 0 2 * * ?")
-    // @Scheduled(cron = "0 6 14 24 5 ?", zone = "Europe/Stockholm")
     public void scrapeAndExtractRunners() {
         String chromeDriverPath = System.getenv("CHROMEDRIVER_PATH");
         System.setProperty("webdriver.chrome.driver", chromeDriverPath);
@@ -40,7 +37,7 @@ public class TableScraper {
         WebDriver driver = new ChromeDriver(options);
 
         try {
-            System.out.println("Navigating to the website...");
+            System.out.println("Navigating to the regristration website");
             driver.get("https://registration.midnattsloppet.com/Web/StartList.aspx?EventGroupId=96&PerCompetition=1");
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
             handleConsent(wait);
@@ -49,7 +46,7 @@ public class TableScraper {
             String[] categories = { "3156", "3157", "3158", "3155" };
 
             for (String category : categories) {
-                System.out.println("Scraping category with value: " + category);
+                System.out.println("Scraping category values: " + category);
                 selectCategory(driver, wait, category);
                 scrapeAllPages(driver, wait);
             }
@@ -58,7 +55,7 @@ public class TableScraper {
             e.printStackTrace();
         } finally {
             driver.quit();
-            System.out.println("Scraping session completed.");
+            System.out.println("Scraping completed!");
         }
     }
 
@@ -84,7 +81,7 @@ public class TableScraper {
 
     private int findLastPageNumber(WebDriver driver, WebDriverWait wait) {
         try {
-            System.out.println("Navigating to the last page...");
+            System.out.println("Navigating to last page");
 
             WebElement lastPageButton = wait
                     .until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(), '>>')]")));
@@ -104,18 +101,17 @@ public class TableScraper {
             wait.until((WebDriver d) -> ((JavascriptExecutor) d).executeScript("return document.readyState")
                     .equals("complete"));
 
-            System.out.println("Last page number is: " + lastPageNumber);
+            System.out.println("Last page is: " + lastPageNumber);
             return lastPageNumber;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Failed to determine the last page number.");
             return -1;
         }
     }
 
     private void navigateToNextPage(WebDriver driver, WebDriverWait wait, int pageNumber) {
         try {
-            System.out.println("Navigating to page " + pageNumber + "...");
+            System.out.println("Navigating to page " + pageNumber);
             WebElement nextPageButton = wait.until(ExpectedConditions
                     .elementToBeClickable(By.xpath("//a[contains(text(), '" + pageNumber + "')]")));
             nextPageButton.click();
@@ -123,39 +119,39 @@ public class TableScraper {
                     .equals("complete"));
             extractRunners(driver.getPageSource());
         } catch (Exception e) {
-            System.out.println("Failed to navigate to page " + pageNumber);
+            System.out.println("Failed navigate to page " + pageNumber);
             e.printStackTrace();
         }
     }
 
     private void clickThreeDotsAndScrape(WebDriver driver, WebDriverWait wait, String xpath) {
         try {
-            System.out.println("Clicking three dots button...");
+            System.out.println("Clicking three dots button");
             WebElement threeDotsButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
             threeDotsButton.click();
             wait.until((WebDriver d) -> ((JavascriptExecutor) d).executeScript("return document.readyState")
                     .equals("complete"));
             extractRunners(driver.getPageSource());
         } catch (Exception e) {
-            System.out.println("Failed to click three dots button.");
+            System.out.println("Failed to click three dots button");
             e.printStackTrace();
         }
     }
 
     private void handleConsent(WebDriverWait wait) {
         try {
-            System.out.println("Handling consent...");
+            System.out.println("Handling cookies consent");
             WebElement allowAllButton = wait.until(ExpectedConditions
                     .elementToBeClickable(By.id("CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")));
             allowAllButton.click();
         } catch (Exception e) {
-            System.out.println("Cookie consent not found or not clickable.");
+            System.out.println("Cookie not found");
         }
     }
 
     private void initiateSearch(WebDriverWait wait) {
         try {
-            System.out.println("Initiating search...");
+            System.out.println("Starting search");
             WebElement competitionDropdown = wait
                     .until(ExpectedConditions.elementToBeClickable(By.id("ctl00_ContentPlaceHolder1_ddlCompetition")));
             competitionDropdown.sendKeys("Midnattsloppet Stockholm 2024");
@@ -165,14 +161,14 @@ public class TableScraper {
             wait.until((WebDriver d) -> ((JavascriptExecutor) d).executeScript("return document.readyState")
                     .equals("complete"));
         } catch (Exception e) {
-            System.out.println("Failed to initiate search.");
+            System.out.println("Failed to start search");
             e.printStackTrace();
         }
     }
 
     private void selectCategory(WebDriver driver, WebDriverWait wait, String categoryValue) {
         try {
-            System.out.println("Selecting category with value: " + categoryValue);
+            System.out.println("Selecting category with value " + categoryValue);
             WebElement categoryDropdown = wait.until(
                     ExpectedConditions.elementToBeClickable(By.id("ctl00_ContentPlaceHolder1_ddlCompetitionClassId")));
             categoryDropdown.click();
@@ -191,7 +187,7 @@ public class TableScraper {
     }
 
     private void extractRunners(String htmlContent) {
-        System.out.println("Extracting runners...");
+        System.out.println("Extracting runners");
         Document doc = Jsoup.parse(htmlContent);
         Elements rows = doc.select("table tr");
         for (Element row : rows) {
@@ -203,7 +199,7 @@ public class TableScraper {
                 try {
                     yearBorn = Integer.parseInt(cells.get(3).text());
                 } catch (NumberFormatException e) {
-                    System.out.println("Skipping row due to invalid year: " + cells.get(3).text());
+                    System.out.println("Skipping row, invalid year: " + cells.get(3).text());
                     continue;
                 }
                 String clubOrCityOrCompany = cells.get(4).text();

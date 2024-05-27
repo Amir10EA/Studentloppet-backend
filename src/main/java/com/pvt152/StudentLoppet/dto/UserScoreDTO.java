@@ -18,11 +18,10 @@ public class UserScoreDTO {
         this.profilePicture = profilePicture;
         this.profilePictureBase64 = profilePicture != null ? profilePicture.getImageAsBase64() : null;
     }
-    public UserScoreDTO(String userName, int score, ProfilePicture profilePicture) {
-        this(userName, null, score, profilePicture); // Call the primary constructor with email as null
-    }
 
-    // Getters and Setters
+    public UserScoreDTO(String userName, int score, ProfilePicture profilePicture) {
+        this(userName, null, score, profilePicture);
+    }
 
     public String getUserName() {
         return userName;
@@ -51,6 +50,7 @@ public class UserScoreDTO {
     public ProfilePicture getProfilePicture() {
         return profilePicture;
     }
+
     public void setProfilePicture(ProfilePicture profilePicture) {
         this.profilePicture = profilePicture;
         this.profilePictureBase64 = profilePicture != null ? profilePicture.getImageAsBase64() : null;

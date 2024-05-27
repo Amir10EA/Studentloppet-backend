@@ -32,11 +32,11 @@ public class UniversityService {
     public int getUniversityRank(University university) {
         List<UniversityMetricDTO> universityScores = calculateUniversityScores();
         int rank = 1;
-        int actualRank = 1; // This holds the actual rank to be returned
-        Integer lastScore = null; // Store the last score for comparison
+        int actualRank = 1;
+        Integer lastScore = null;
 
         for (UniversityMetricDTO universityScore : universityScores) {
-            Integer currentScore = (Integer) universityScore.getMetric(); // Explicitly cast to Integer
+            Integer currentScore = (Integer) universityScore.getMetric();
 
             if (lastScore == null || !lastScore.equals(currentScore)) {
                 lastScore = currentScore;
@@ -47,7 +47,7 @@ public class UniversityService {
             }
             actualRank++;
         }
-        return -1; // In case the university is not found
+        return -1;
     }
 
     public List<UniversityMetricDTO> countUsersByUniversity() {

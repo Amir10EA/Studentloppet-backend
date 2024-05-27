@@ -3,6 +3,7 @@ package com.pvt152.StudentLoppet.model;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Base64;
+
 @Entity
 public class ProfilePicture {
 
@@ -21,13 +22,15 @@ public class ProfilePicture {
     @Column(name = "mime_type")
     private String mimeType;
 
-    public ProfilePicture() {}
+    public ProfilePicture() {
+    }
 
     public ProfilePicture(byte[] image, String filename, String mimeType) {
         this.image = image;
         this.filename = filename;
         this.mimeType = mimeType;
     }
+
     public String getImageAsBase64() {
         return Base64.getEncoder().encodeToString(this.image);
     }

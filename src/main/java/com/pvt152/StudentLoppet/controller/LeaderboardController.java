@@ -1,26 +1,15 @@
 package com.pvt152.StudentLoppet.controller;
 
-import com.pvt152.StudentLoppet.dto.UniversityMetricDTO;
 import com.pvt152.StudentLoppet.dto.UserScoreDTO;
 import com.pvt152.StudentLoppet.dto.UserStats;
 import com.pvt152.StudentLoppet.model.University;
-import com.pvt152.StudentLoppet.service.ActivityService;
 import com.pvt152.StudentLoppet.service.LeaderboardService;
-import com.pvt152.StudentLoppet.service.UniversityService;
-import com.pvt152.StudentLoppet.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping(path = "/api/leaderboard")
@@ -35,7 +24,6 @@ public class LeaderboardController {
             List<UserScoreDTO> userScores = leaderboardService.getStudentsByScore(university);
             return ResponseEntity.ok(userScores);
         } catch (Exception e) {
-            // Return an empty list and a bad request status if there is an error
             return ResponseEntity.badRequest().body(Collections.emptyList());
         }
     }

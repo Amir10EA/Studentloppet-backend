@@ -29,7 +29,6 @@ public class RunnerResult {
         this.place = place;
     }
 
-    // Getters and setters
     public String getId() {
         return id;
     }
