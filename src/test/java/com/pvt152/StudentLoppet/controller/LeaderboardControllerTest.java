@@ -36,7 +36,7 @@ class LeaderboardControllerTest {
         profilePicture.setId(1L);
         profilePicture.setFilename("a.jpg");
         profilePicture.setMimeType("image/jpeg");
-        profilePicture.setImage(new byte[] {}); // Ensure image is not null
+        profilePicture.setImage(new byte[] {});
         return profilePicture;
     }
 
