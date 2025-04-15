@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+# Ignore real properties files with credentials
+src/main/resources/application.properties
+src/main/resources/application-*.properties
